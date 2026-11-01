@@ -222,6 +222,20 @@
   .player.playing .ico-play { display: none; }
   .player.playing .ico-pause { display: block; }
   .track { flex: 1; min-width: 0; }
+  .track-idx { color: var(--muted); font-weight: 400; font-size: 0.82rem; margin-left: 4px; }
+  .next {
+    flex: 0 0 auto;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    display: grid; place-items: center;
+    transition: border-color .15s, color .15s;
+  }
+  .next:hover { border-color: var(--accent); color: var(--accent); }
+  .next svg { width: 18px; height: 18px; fill: currentColor; }
   .track-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 8px; }
   .track-name { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .track-time { color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -274,9 +288,9 @@
       <li><a href="https://github.com/CUDADA-jpg" target="_blank" rel="noopener">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
         GitHub</a></li>
-      <li><button class="pill-music" id="pill-music" type="button" aria-label="播放 The Little Things" title="The Little Things">
+      <li><button class="pill-music" id="pill-music" type="button" aria-label="播放" title="The Little Things">
         <span class="pill-note" aria-hidden="true">🎵</span>
-        <span class="pill-text">The Little Things</span>
+        <span class="pill-text" id="pill-text">The Little Things</span>
       </button></li>
     </ul>
     </div>
@@ -300,12 +314,15 @@
       </button>
       <div class="track">
         <div class="track-head">
-          <span class="track-name">The Little Things</span>
-          <span class="track-time"><span id="cur">0:00</span> / <span id="dur">3:13</span></span>
+          <span class="track-name"><span id="track-name">The Little Things</span> <span class="track-idx" id="track-idx">1 / 2</span></span>
+          <span class="track-time"><span id="cur">0:00</span> / <span id="dur">0:00</span></span>
         </div>
         <input class="seek" id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="进度">
       </div>
-      <audio id="audio" preload="metadata" src="music/the-little-things.m4a"></audio>
+      <button class="next" id="next" type="button" aria-label="下一首" title="下一首">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l8 6-8 6V6zm10 0h2v12h-2z"/></svg>
+      </button>
+      <audio id="audio" preload="metadata"></audio>
     </div>
   </section>
 
@@ -365,16 +382,40 @@ document.getElementById('year').textContent = new Date().getFullYear();
   }
 
   var pill = document.getElementById('pill-music');
+  var pillText = document.getElementById('pill-text');
+  var trackName = document.getElementById('track-name');
+  var trackIdx = document.getElementById('track-idx');
+  var nextBtn = document.getElementById('next');
+
+  var tracks = [
+    { name: 'The Little Things', src: 'music/the-little-things.m4a' },
+    { name: 'Geek', src: 'music/geek.m4a' }
+  ];
+  var ti = 0;
+
+  function load(n, autoplay) {
+    ti = (n + tracks.length) % tracks.length;
+    audio.src = tracks[ti].src;
+    pillText.textContent = tracks[ti].name;
+    trackName.textContent = tracks[ti].name;
+    trackIdx.textContent = (ti + 1) + ' / ' + tracks.length;
+    pill.title = tracks[ti].name;
+    cur.textContent = '0:00'; dur.textContent = '0:00'; paint(0);
+    if (autoplay) audio.play();
+  }
+  load(0, false);
+
   function toggle() { if (audio.paused) audio.play(); else audio.pause(); }
   btn.addEventListener('click', toggle);
   pill.addEventListener('click', toggle);
+  nextBtn.addEventListener('click', function () { load(ti + 1, !audio.paused); });
   audio.addEventListener('play', function () {
     player.classList.add('playing'); pill.classList.add('playing');
-    btn.setAttribute('aria-label', '暂停'); pill.setAttribute('aria-label', '暂停 The Little Things');
+    btn.setAttribute('aria-label', '暂停'); pill.setAttribute('aria-label', '暂停');
   });
   audio.addEventListener('pause', function () {
     player.classList.remove('playing'); pill.classList.remove('playing');
-    btn.setAttribute('aria-label', '播放'); pill.setAttribute('aria-label', '播放 The Little Things');
+    btn.setAttribute('aria-label', '播放'); pill.setAttribute('aria-label', '播放');
   });
   audio.addEventListener('loadedmetadata', function () { dur.textContent = fmt(audio.duration); });
   audio.addEventListener('timeupdate', function () {
@@ -382,7 +423,7 @@ document.getElementById('year').textContent = new Date().getFullYear();
     cur.textContent = fmt(audio.currentTime);
     paint(audio.currentTime / audio.duration);
   });
-  audio.addEventListener('ended', function () { paint(0); cur.textContent = '0:00'; });
+  audio.addEventListener('ended', function () { load(ti + 1, true); });
   seek.addEventListener('input', function () {
     seeking = true;
     var r = seek.value / 1000;
