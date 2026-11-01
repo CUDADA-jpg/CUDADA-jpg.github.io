@@ -342,6 +342,68 @@
   @media (prefers-reduced-motion: reduce) {
     .cloud-body, .cloud.squish .cloud-body { animation: none; }
   }
+  .latte {
+    position: fixed;
+    left: 0; bottom: 6px;
+    width: 48px; height: 42px;
+    z-index: 50;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    will-change: transform;
+    touch-action: manipulation;
+  }
+  .latte-body { position: relative; width: 100%; height: 100%; transform-origin: 50% 100%; }
+  .latte-sprite { width: 100%; height: 100%; display: block; }
+  .latte.flip .latte-sprite { transform: scaleX(-1); }
+  .latte.hop .latte-body { animation: latte-hop .42s cubic-bezier(.3,.9,.4,1) 1; }
+  .latte.cheer .latte-body { animation: latte-cheer .6s ease-out 1; }
+  @keyframes latte-hop {
+    0%   { transform: translateY(0) scale(1, 1); }
+    20%  { transform: translateY(-2px) scale(1.1, .9); }
+    55%  { transform: translateY(-14px) scale(.95, 1.05); }
+    100% { transform: translateY(0) scale(1, 1); }
+  }
+  @keyframes latte-cheer {
+    0%   { transform: scale(1, 1); }
+    25%  { transform: scale(1.15, .85); }
+    50%  { transform: translateY(-16px) scale(.95, 1.1); }
+    75%  { transform: translateY(0) scale(1.05, .95); }
+    100% { transform: scale(1, 1); }
+  }
+  .steam {
+    position: absolute;
+    top: -2px;
+    width: 3px; height: 8px;
+    border-radius: 2px;
+    background: var(--muted);
+    opacity: 0;
+    animation: steam 2.2s ease-out infinite;
+  }
+  .steam.s1 { left: 12px; animation-delay: 0s; }
+  .steam.s2 { left: 20px; animation-delay: .7s; }
+  .steam.s3 { left: 28px; animation-delay: 1.4s; }
+  @keyframes steam {
+    0%   { opacity: 0;   transform: translateY(0) scaleY(.6); }
+    20%  { opacity: .55; }
+    100% { opacity: 0;   transform: translateY(-16px) translateX(2px) scaleY(1.2); }
+  }
+  .latte-heart {
+    position: fixed;
+    width: 12px; height: 12px;
+    pointer-events: none;
+    z-index: 51;
+    animation: heart-up 1s ease-out forwards;
+  }
+  .latte-heart svg { width: 100%; height: 100%; display: block; }
+  @keyframes heart-up {
+    from { opacity: 1; transform: translateY(0) scale(.6); }
+    40%  { opacity: 1; transform: translateY(-14px) scale(1.1); }
+    to   { opacity: 0; transform: translateY(-40px) scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .steam, .latte.hop .latte-body, .latte.cheer .latte-body { animation: none; }
+  }
   footer {
     margin-top: 72px;
     padding-top: 24px;
@@ -422,6 +484,12 @@
 </div>
 <div class="cloud" id="cloud" title="戳我会下雨" role="img" aria-label="一朵飘来飘去的像素云">
   <div class="cloud-body" id="cloud-body"><svg class="cloud-sprite" viewBox="0 0 18 11" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM5 1h1v1h-1zM11 1h1v1h-1zM4 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM15 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM16 3h1v1h-1zM1 4h1v1h-1zM17 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM12 5h1v1h-1zM17 5h1v1h-1zM0 6h1v1h-1zM17 6h1v1h-1zM0 7h1v1h-1zM7 7h1v1h-1zM10 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM17 8h1v1h-1zM1 9h1v1h-1zM16 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1z"/><path fill="#ffffff" d="M6 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM10 6h1v1h-1zM11 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM2 9h1v1h-1z"/><path fill="#f2a3a3" d="M3 6h1v1h-1zM14 6h1v1h-1z"/><path fill="#dbe6f0" d="M3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1z"/></svg></div>
+</div>
+<div class="latte" id="latte" title="戳我一下" role="img" aria-label="一杯蹦蹦跳跳的像素拿铁">
+  <div class="latte-body" id="latte-body">
+    <span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span>
+    <svg class="latte-sprite" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM0 1h1v1h-1zM13 1h1v1h-1zM0 2h1v1h-1zM13 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM1 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM4 5h1v1h-1zM9 5h1v1h-1zM13 5h1v1h-1zM15 5h1v1h-1zM1 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM1 7h1v1h-1zM6 7h1v1h-1zM9 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM1 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM13 8h1v1h-1zM15 8h1v1h-1zM1 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM2 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM12 11h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM6 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1z"/><path fill="#c48a5a" d="M1 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM12 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1z"/><path fill="#fff3dc" d="M2 1h1v1h-1zM3 1h1v1h-1zM7 1h1v1h-1z"/><path fill="#ffffff" d="M2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM14 5h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1z"/><path fill="#f2a3a3" d="M3 6h1v1h-1zM11 6h1v1h-1z"/><path fill="#dbe6f0" d="M3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM6 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1z"/></svg>
+  </div>
 </div>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -658,6 +726,63 @@ document.getElementById('year').textContent = new Date().getFullYear();
     if (!reduce) { vx = vy = 0; resting = 1.2; }
   });
   cloud.addEventListener('animationend', function (e) { if (e.animationName === 'cloud-squish') cloud.classList.remove('squish'); });
+  window.addEventListener('resize', function () { x = Math.min(x, maxX()); apply(); });
+})();
+
+(function () {
+  var latte = document.getElementById('latte');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W = 48;
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function maxX() { return Math.max(0, window.innerWidth - W); }
+  var x = Math.min(maxX(), Math.max(0, window.innerWidth * 0.35));
+  var hopsLeft = 0, dir = 1, timer = null;
+
+  function apply() { latte.style.transform = 'translateX(' + x + 'px)'; }
+  function hopOnce() {
+    latte.classList.remove('hop'); void latte.offsetWidth; latte.classList.add('hop');
+    var start = x, dist = dir * rand(22, 34), t0 = performance.now();
+    (function step(now) {
+      var k = Math.min(1, (now - t0) / 420);
+      x = Math.max(0, Math.min(maxX(), start + dist * k));
+      apply();
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  function plan() {
+    hopsLeft = Math.round(rand(2, 5));
+    dir = Math.random() < 0.5 ? -1 : 1;
+    if (x < 60) dir = 1; if (x > maxX() - 60) dir = -1;
+    latte.classList.toggle('flip', dir < 0);
+    burst();
+  }
+  function burst() {
+    if (hopsLeft <= 0) { timer = setTimeout(plan, rand(1200, 3500)); return; }
+    hopsLeft--; hopOnce();
+    timer = setTimeout(burst, 520);
+  }
+  apply();
+  if (!reduce) timer = setTimeout(plan, 1500);
+
+  function heart() {
+    var r = latte.getBoundingClientRect();
+    var h = document.createElement('div');
+    h.className = 'latte-heart';
+    h.style.left = (r.left + r.width / 2 - 6) + 'px';
+    h.style.top = (r.top - 6) + 'px';
+    h.innerHTML = '<svg viewBox="0 0 10 9" shape-rendering="crispEdges"><path fill="#e0565b" d="M1 1h2v1h1v1h2V2h1V1h2v3H8v1H7v1H6v1H5v1H4V7H3V6H2V5H1V4H0V1z"/></svg>';
+    document.body.appendChild(h);
+    setTimeout(function () { h.remove(); }, 1100);
+  }
+  latte.addEventListener('click', function () {
+    latte.classList.remove('cheer'); void latte.offsetWidth; latte.classList.add('cheer');
+    heart();
+    if (!reduce) { clearTimeout(timer); hopsLeft = 0; timer = setTimeout(plan, 1500); }
+  });
+  latte.addEventListener('animationend', function (e) {
+    if (e.animationName === 'latte-hop') latte.classList.remove('hop');
+    if (e.animationName === 'latte-cheer') latte.classList.remove('cheer');
+  });
   window.addEventListener('resize', function () { x = Math.min(x, maxX()); apply(); });
 })();
 </script>
