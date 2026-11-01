@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CUDADA-jpg</title>
+<meta name="description" content="CUDADA-jpg 的个人主页">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✦</text></svg>">
+<style>
+  :root {
+    --bg: #faf9f6;
+    --fg: #1c1b19;
+    --muted: #6b6861;
+    --line: #e6e3dc;
+    --card: #ffffff;
+    --accent: #c8502a;
+    --accent-soft: #fbe9e2;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141311;
+      --fg: #ebe8e1;
+      --muted: #9b978e;
+      --line: #2a2825;
+      --card: #1d1c19;
+      --accent: #f08a62;
+      --accent-soft: #3a241b;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #141311;
+    --fg: #ebe8e1;
+    --muted: #9b978e;
+    --line: #2a2825;
+    --card: #1d1c19;
+    --accent: #f08a62;
+    --accent-soft: #3a241b;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 72px 16px 96px;
+  }
+  header { margin-bottom: 56px; }
+  .avatar {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    display: block;
+    margin-bottom: 24px;
+    background: var(--card);
+  }
+  h1 {
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+  .tagline { color: var(--muted); margin: 0 0 20px; font-size: 1.05rem; }
+  .links { display: flex; flex-wrap: wrap; gap: 10px; padding: 0; margin: 0; list-style: none; }
+  .links a {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--fg);
+    text-decoration: none;
+    font-size: 0.92rem;
+    background: var(--card);
+    transition: border-color .15s, color .15s;
+  }
+  .links a:hover { border-color: var(--accent); color: var(--accent); }
+  .links svg { width: 16px; height: 16px; fill: currentColor; }
+  h2 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin: 48px 0 16px;
+    font-weight: 600;
+  }
+  section p { margin: 0 0 12px; }
+  .projects { display: grid; gap: 14px; padding: 0; margin: 0; list-style: none; }
+  .project {
+    display: block;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--card);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color .15s, transform .15s;
+  }
+  .project:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .project-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .project-name { font-weight: 600; font-size: 1.05rem; }
+  .project-meta { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+  .project-desc { color: var(--muted); margin: 6px 0 0; font-size: 0.95rem; }
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 1px 8px;
+    border-radius: 6px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  footer {
+    margin-top: 72px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+  footer a { color: inherit; }
+  @media (max-width: 480px) {
+    main { padding-top: 48px; }
+    h1 { font-size: 1.7rem; }
+    .project-head { flex-direction: column; gap: 2px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img class="avatar" src="https://github.com/CUDADA-jpg.png?size=176" alt="CUDADA-jpg 的头像" width="88" height="88">
+    <h1>CUDADA-jpg</h1>
+    <p class="tagline">写代码，也写故事。</p>
+    <ul class="links">
+      <li><a href="https://github.com/CUDADA-jpg" target="_blank" rel="noopener">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub</a></li>
+    </ul>
+  </header>
+
+  <section id="about">
+    <h2>关于我</h2>
+    <p>你好，我是 CUDADA-jpg。这里是我的个人主页，用来放我做过的东西和正在折腾的项目。</p>
+    <p>平时的兴趣是做小游戏、写一点交互叙事，也会研究 AI 相关的工具。</p>
+  </section>
+
+  <section id="projects">
+    <h2>项目</h2>
+    <ul class="projects">
+      <li>
+        <a class="project" href="https://github.com/CUDADA-jpg/her-words" target="_blank" rel="noopener">
+          <div class="project-head">
+            <span class="project-name">her-words</span>
+            <span class="project-meta">★ 43 · JavaScript</span>
+          </div>
+          <p class="project-desc"><span class="tag">游戏</span>一个关于好好提问的游戏。</p>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    © <span id="year"></span> CUDADA-jpg · 本页托管于 <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
+  </footer>
+</main>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
