@@ -141,6 +141,25 @@
   }
   .links a:hover { border-color: var(--accent); color: var(--accent); }
   .links svg { width: 16px; height: 16px; fill: currentColor; }
+  .pill-music {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    color: var(--fg);
+    font: inherit; font-size: 0.92rem;
+    background: var(--card);
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .pill-music:hover { border-color: var(--accent); color: var(--accent); }
+  .pill-music.playing { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+  .pill-music.playing .pill-note { animation: bounce 1s ease-in-out infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0) rotate(-6deg); }
+    50%      { transform: translateY(-2px) rotate(6deg); }
+  }
+  @media (prefers-reduced-motion: reduce) { .pill-music.playing .pill-note { animation: none; } }
   h2 {
     font-size: 0.8rem;
     text-transform: uppercase;
@@ -255,6 +274,10 @@
       <li><a href="https://github.com/CUDADA-jpg" target="_blank" rel="noopener">
         <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
         GitHub</a></li>
+      <li><button class="pill-music" id="pill-music" type="button" aria-label="播放 The Little Things" title="The Little Things">
+        <span class="pill-note" aria-hidden="true">🎵</span>
+        <span class="pill-text">The Little Things</span>
+      </button></li>
     </ul>
     </div>
     <div class="greet" aria-live="polite">
@@ -298,22 +321,9 @@ document.getElementById('year').textContent = new Date().getFullYear();
   var greetings = [
     ['你好', '中文'],
     ['Hello', 'English'],
-    ['こんにちは', '日本語'],
-    ['안녕하세요', '한국어'],
     ['Bonjour', 'Français'],
-    ['Hola', 'Español'],
-    ['Hallo', 'Deutsch'],
-    ['Ciao', 'Italiano'],
-    ['Olá', 'Português'],
-    ['Привет', 'Русский'],
-    ['مرحبا', 'العربية'],
-    ['नमस्ते', 'हिन्दी'],
-    ['Xin chào', 'Tiếng Việt'],
-    ['สวัสดี', 'ไทย'],
-    ['Merhaba', 'Türkçe'],
-    ['Γεια σου', 'Ελληνικά'],
-    ['Hej', 'Svenska'],
-    ['Habari', 'Kiswahili']
+    ['안녕하세요', '한국어'],
+    ['Hola', 'Español']
   ];
   var word = document.getElementById('greet-word');
   var lang = document.getElementById('greet-lang');
@@ -354,11 +364,18 @@ document.getElementById('year').textContent = new Date().getFullYear();
     seek.style.setProperty('--p', (ratio * 100) + '%');
   }
 
-  btn.addEventListener('click', function () {
-    if (audio.paused) audio.play(); else audio.pause();
+  var pill = document.getElementById('pill-music');
+  function toggle() { if (audio.paused) audio.play(); else audio.pause(); }
+  btn.addEventListener('click', toggle);
+  pill.addEventListener('click', toggle);
+  audio.addEventListener('play', function () {
+    player.classList.add('playing'); pill.classList.add('playing');
+    btn.setAttribute('aria-label', '暂停'); pill.setAttribute('aria-label', '暂停 The Little Things');
   });
-  audio.addEventListener('play', function () { player.classList.add('playing'); btn.setAttribute('aria-label', '暂停'); });
-  audio.addEventListener('pause', function () { player.classList.remove('playing'); btn.setAttribute('aria-label', '播放'); });
+  audio.addEventListener('pause', function () {
+    player.classList.remove('playing'); pill.classList.remove('playing');
+    btn.setAttribute('aria-label', '播放'); pill.setAttribute('aria-label', '播放 The Little Things');
+  });
   audio.addEventListener('loadedmetadata', function () { dur.textContent = fmt(audio.duration); });
   audio.addEventListener('timeupdate', function () {
     if (seeking || !audio.duration) return;
