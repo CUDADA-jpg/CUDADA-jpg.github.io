@@ -301,6 +301,47 @@
   @media (prefers-reduced-motion: reduce) {
     .pet.walking .pet-body, .pet.hop .pet-body { animation: none; }
   }
+  .cloud {
+    position: fixed;
+    left: 0; bottom: 0;
+    width: 72px; height: 44px;
+    z-index: 48;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    will-change: transform;
+    touch-action: manipulation;
+  }
+  .cloud-body { width: 100%; height: 100%; animation: cloud-bob 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  .cloud-sprite { width: 100%; height: 100%; display: block; }
+  .cloud.flip .cloud-sprite { transform: scaleX(-1); }
+  .cloud.squish .cloud-body { animation: cloud-squish .5s ease-out 1; }
+  @keyframes cloud-bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+  @keyframes cloud-squish {
+    0%   { transform: scale(1, 1); }
+    30%  { transform: scale(1.15, .8); }
+    60%  { transform: scale(.95, 1.08); }
+    100% { transform: scale(1, 1); }
+  }
+  .rain-drop {
+    position: fixed;
+    width: 3px; height: 7px;
+    border-radius: 2px;
+    background: #6fa8dc;
+    pointer-events: none;
+    z-index: 47;
+    animation: rain .7s ease-in forwards;
+  }
+  @keyframes rain {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(var(--fall)); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cloud-body, .cloud.squish .cloud-body { animation: none; }
+  }
   footer {
     margin-top: 72px;
     padding-top: 24px;
@@ -378,6 +419,9 @@
 </main>
 <div class="pet" id="pet" title="戳我一下" role="img" aria-label="一只到处跑的像素星星">
   <div class="pet-body" id="pet-body"><svg class="pet-sprite" viewBox="0 0 16 15" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M7 0h1v1h-1zM8 0h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM6 2h1v1h-1zM9 2h1v1h-1zM5 3h1v1h-1zM10 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM10 5h1v1h-1zM15 5h1v1h-1zM1 6h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM9 6h1v1h-1zM11 6h1v1h-1zM14 6h1v1h-1zM2 7h1v1h-1zM13 7h1v1h-1zM2 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM13 8h1v1h-1zM1 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM6 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM14 11h1v1h-1zM1 12h1v1h-1zM5 12h1v1h-1zM9 12h1v1h-1zM14 12h1v1h-1zM1 13h1v1h-1zM4 13h1v1h-1zM10 13h1v1h-1zM14 13h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM13 14h1v1h-1z"/><path fill="#fbe79a" d="M7 1h1v1h-1zM7 2h1v1h-1zM6 3h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM2 6h1v1h-1z"/><path fill="#f5d76e" d="M8 1h1v1h-1zM8 2h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM13 5h1v1h-1zM3 6h1v1h-1zM5 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1z"/><path fill="#d9b84f" d="M14 5h1v1h-1zM13 6h1v1h-1zM12 8h1v1h-1zM13 9h1v1h-1zM13 10h1v1h-1zM13 11h1v1h-1zM13 12h1v1h-1zM13 13h1v1h-1z"/><path fill="#f2a3a3" d="M3 7h1v1h-1zM4 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1z"/></svg></div>
+</div>
+<div class="cloud" id="cloud" title="戳我会下雨" role="img" aria-label="一朵飘来飘去的像素云">
+  <div class="cloud-body" id="cloud-body"><svg class="cloud-sprite" viewBox="0 0 18 11" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM5 1h1v1h-1zM11 1h1v1h-1zM4 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM15 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM16 3h1v1h-1zM1 4h1v1h-1zM17 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM12 5h1v1h-1zM17 5h1v1h-1zM0 6h1v1h-1zM17 6h1v1h-1zM0 7h1v1h-1zM7 7h1v1h-1zM10 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM17 8h1v1h-1zM1 9h1v1h-1zM16 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1z"/><path fill="#ffffff" d="M6 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM10 6h1v1h-1zM11 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM2 9h1v1h-1z"/><path fill="#f2a3a3" d="M3 6h1v1h-1zM14 6h1v1h-1z"/><path fill="#dbe6f0" d="M3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1z"/></svg></div>
 </div>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -556,6 +600,65 @@ document.getElementById('year').textContent = new Date().getFullYear();
   });
   pet.addEventListener('animationend', function (e) { if (e.animationName === 'pet-hop') pet.classList.remove('hop'); });
   window.addEventListener('resize', function () { x = Math.min(x, maxX()); });
+})();
+
+(function () {
+  var cloud = document.getElementById('cloud');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var W = 72, H = 44;
+  function rand(a, b) { return a + Math.random() * (b - a); }
+  function maxX() { return Math.max(0, window.innerWidth - W); }
+  var x = Math.min(maxX(), window.innerWidth * 0.65);
+  var y = 92;                      // distance from bottom
+  var tx = x, ty = y, vx = 0, vy = 0, dir = 1, last = 0;
+  var resting = 0;
+
+  function apply() { cloud.style.transform = 'translate(' + x + 'px, ' + (-y) + 'px)'; }
+  function pick() {
+    tx = rand(0, maxX());
+    if (Math.abs(tx - x) < 60) tx = Math.max(0, Math.min(maxX(), x + (x < maxX() / 2 ? 1 : -1) * rand(120, 260)));
+    ty = rand(70, Math.max(80, Math.min(170, window.innerHeight * 0.3)));
+    var sp = rand(18, 34);
+    var dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy) || 1;
+    vx = dx / d * sp; vy = dy / d * sp;
+    dir = dx >= 0 ? 1 : -1;
+    cloud.classList.toggle('flip', dir < 0);
+  }
+  function frame(now) {
+    if (!last) last = now;
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (resting > 0) { resting -= dt; if (resting <= 0) pick(); }
+    else {
+      x += vx * dt; y += vy * dt;
+      if ((vx >= 0 && x >= tx) || (vx < 0 && x <= tx)) { x = tx; y = ty; vx = vy = 0; resting = rand(1.5, 4); }
+    }
+    x = Math.max(0, Math.min(maxX(), x));
+    apply();
+    requestAnimationFrame(frame);
+  }
+  apply();
+  if (!reduce) { resting = 1; requestAnimationFrame(frame); }
+
+  function rain() {
+    var r = cloud.getBoundingClientRect();
+    for (var i = 0; i < 9; i++) {
+      var d = document.createElement('div');
+      d.className = 'rain-drop';
+      d.style.left = (r.left + 8 + Math.random() * (r.width - 16)) + 'px';
+      d.style.top = (r.bottom - 6) + 'px';
+      d.style.setProperty('--fall', rand(40, 80) + 'px');
+      d.style.animationDelay = (Math.random() * 0.25) + 's';
+      document.body.appendChild(d);
+      setTimeout(function (el) { el.remove(); }.bind(null, d), 1100);
+    }
+  }
+  cloud.addEventListener('click', function () {
+    cloud.classList.remove('squish'); void cloud.offsetWidth; cloud.classList.add('squish');
+    rain();
+    if (!reduce) { vx = vy = 0; resting = 1.2; }
+  });
+  cloud.addEventListener('animationend', function (e) { if (e.animationName === 'cloud-squish') cloud.classList.remove('squish'); });
+  window.addEventListener('resize', function () { x = Math.min(x, maxX()); apply(); });
 })();
 </script>
 </body>
