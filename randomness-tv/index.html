@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+<title>randomness TV</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=ZCOOL+QingKe+HuangYou&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+/* Layout: a channel guide. A small pixel TV header, then four channel cards (2 columns, 1 on phones),
+   each card a link to one paper's animation. Same dark arcade palette as the episode pages. */
+:root{
+  --bg:#070b16;
+  --panel:#0f162b;
+  --line:#223055;
+  --fg:#e9edff;
+  --dim:#8a95c4;
+  --accent:#4d6bfe;
+  --accent2:#5ee7ff;
+  --amber:#ffc247;
+  --display:"ZCOOL QingKe HuangYou","Noto Sans SC",sans-serif;
+  --pixel:"Press Start 2P",monospace;
+  --body:"Noto Sans SC",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:28px 56px;
+}
+.wrap{max-width:860px;margin:0 auto;display:grid;gap:26px}
+header{display:grid;grid-template-columns:auto 1fr;gap:6px 20px;align-items:center}
+header canvas{width:96px;height:72px;image-rendering:pixelated;grid-row:1/4}
+.eyebrow{font-family:var(--pixel);font-size:10px;letter-spacing:.06em;color:var(--accent2);line-height:1.8}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(38px,7vw,60px);line-height:1.05;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--dim);max-width:60ch}
+.guide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0}
+.ch{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto 1fr auto;gap:4px 16px;min-width:0;
+  background:var(--panel);border:4px solid var(--line);box-shadow:0 0 0 4px #0a0f1f;padding:16px;color:inherit;text-decoration:none;
+  transition:border-color .15s,transform .15s}
+.ch:hover,.ch:focus-visible{border-color:var(--accent);outline:none;transform:translateY(-2px)}
+.ch canvas{width:72px;height:72px;image-rendering:pixelated;grid-row:1/5;background:#000;border:2px solid var(--line)}
+.ch .num{font-family:var(--pixel);font-size:10px;color:var(--amber);letter-spacing:.06em}
+.ch h2{font-family:var(--display);font-weight:400;font-size:clamp(22px,3.2vw,27px);margin:0;line-height:1.15;text-wrap:balance}
+.ch p{margin:0;color:var(--dim);font-size:14px;line-height:1.6;min-width:0}
+.ch .meta{font-family:var(--pixel);font-size:9px;color:var(--accent2);letter-spacing:.04em;line-height:1.9}
+.ch .play{font-family:var(--pixel);font-size:10px;color:var(--fg);grid-column:2;margin-top:6px}
+.ch:hover .play{color:var(--amber)}
+.howto{color:var(--dim);font-size:13px;margin:0;border-top:1px solid var(--line);padding-top:16px}
+footer{color:var(--dim);font-size:13px}
+footer a{color:var(--accent2)}
+@media (max-width:640px){.guide{grid-template-columns:1fr}}
+@media (max-width:480px){header{grid-template-columns:1fr}header canvas{grid-row:auto}}
+@media (prefers-reduced-motion:reduce){.ch{transition:none}}
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <canvas id="tv" width="32" height="24" aria-hidden="true"></canvas>
+    <div class="eyebrow">DEEPSEEK-AI · 4 PAPERS · PIXEL EXPLAINERS · 1 SPECIAL</div>
+    <h1>randomness TV</h1>
+    <p class="lead">DeepSeek 最近四篇论文，每篇一集像素动画，按发表时间从新到旧排。点一个频道开始看，每集约 70 到 90 秒，自动播放，带中文字幕。最后一个频道是特别节目：一段实时 3D 的《道德经》。</p>
+  </header>
+
+  <ol class="guide">
+    <li><a class="ch" href="dsec.html">
+      <canvas width="18" height="18" data-icon="dsec" aria-hidden="true"></canvas>
+      <span class="num">CH 01</span>
+      <h2>DSec：给智能体训练用的沙箱工厂</h2>
+      <p>一个 RL 任务一次要 3.2 万个沙箱。四种后端、随机抽 k 台的调度、按需拉取的镜像、睡着的沙箱、GPU 被抢占时的全体暂停。</p>
+      <span class="meta">ARXIV 2609.22978 · 2026.09.19 · 11 SCENES</span>
+      <span class="play">&gt; PLAY</span>
+    </a></li>
+    <li><a class="ch" href="v41flash.html">
+      <canvas width="18" height="18" data-icon="flash" aria-hidden="true"></canvas>
+      <span class="num">CH 02</span>
+      <h2>V4.1-Flash：把 KV 缓存压到 890 字节</h2>
+      <p>编码器-解码器拆塔、跨层复用 KV 和索引、分层稀疏索引器、FP4 共享缩放、滑窗 KV 重放不归档。比 V4-Flash 小 4 倍，比 V1 小 437 倍。</p>
+      <span class="meta">ARXIV 2609.19969 · 2026.09.17 · 9 SCENES</span>
+      <span class="play">&gt; PLAY</span>
+    </a></li>
+    <li><a class="ch" href="v4.html">
+      <canvas width="18" height="18" data-icon="v4" aria-hidden="true"></canvas>
+      <span class="num">CH 03</span>
+      <h2>DeepSeek-V4：百万 token 上下文怎么算得起</h2>
+      <p>1.6T 参数只激活 49B、384 个专家每次请 6 个加 1 个、CSA 索引卡与闪电索引器、四车道残差流、十个老师蒸馏一个学生。</p>
+      <span class="meta">ARXIV 2606.19348 · 2026.04.26 · 9 SCENES</span>
+      <span class="play">&gt; PLAY</span>
+    </a></li>
+    <li><a class="ch" href="mhc.html">
+      <canvas width="18" height="18" data-icon="mhc" aria-hidden="true"></canvas>
+      <span class="num">CH 04</span>
+      <h2>mHC：四车道残差流为什么不会炸</h2>
+      <p>超连接把残差拓成四条车道，增益飙到 3000；用双随机矩阵约束，Sinkhorn-Knopp 来回归一化 20 步，增益压到 1.6，开销只多 6.7%。</p>
+      <span class="meta">ARXIV 2512.24880 · 2025.12.31 · 9 SCENES</span>
+      <span class="play">&gt; PLAY</span>
+    </a></li>
+    <li><a class="ch" href="daodejing.html">
+      <canvas width="18" height="18" data-icon="ddj" aria-hidden="true"></canvas>
+      <span class="num">CH 05 · SPECIAL</span>
+      <h2>道德经 · 云上：一座漂浮的小岛</h2>
+      <p>云海之上，老者坐在蒲团上读竹简，蝴蝶绕飞，花瓣轻落。十一章原文配白话解释，逐章切换，可以拖动旋转、滚轮缩放。实时 3D，不是像素画。</p>
+      <span class="meta">LAOZI · 11 CHAPTERS · REAL-TIME 3D</span>
+      <span class="play">&gt; PLAY</span>
+    </a></li>
+  </ol>
+
+  <p class="howto">每集里：空格 播放 / 暂停，← → 切换场景，点画面也可以暂停。画面右上角有「返回频道表」。</p>
+  <footer><a href="../">&lt; 回到 CUDADA-jpg 主页</a><br>四篇论文均为 DeepSeek-AI 发表于 arXiv。画面中的数字取自论文正文，少数按论文给出的倍数反推的数字在页面里有标注。</footer>
+</main>
+
+<script>
+(function(){
+const C={blue:'#4d6bfe',blue2:'#2f45b8',cyan:'#5ee7ff',green:'#5bf07a',amber:'#ffc247',amber2:'#ffe08a',purple:'#b68cff',white:'#f2f4ff',dark:'#060913',steel:'#2a3658',steel2:'#44568c',bg:'#0a0f1f'};
+function draw(cv,rows,map,ox,oy){const ctx=cv.getContext('2d');ctx.fillStyle=C.bg;ctx.fillRect(0,0,cv.width,cv.height);
+  for(let j=0;j<rows.length;j++)for(let i=0;i<rows[j].length;i++){const ch=rows[j][i];if(ch!=='.'&&map[ch]){ctx.fillStyle=map[ch];ctx.fillRect(ox+i,oy+j,1,1);}}}
+const ICONS={
+  dsec:[["................","..SSSSSSSSSSSS..","..SBBBBBBBBBBS..","..SBWWWWWWWWBS..","..SBBBBBBBBBBS..","..SBWWWWWWWWBS..","..SBBBBBBBBBBS..","..SBWWWWWWWWBS..","..SBBBBBBBBBBS..","..SSSSSSSSSSSS..","......G.G.......","......G.G.......","................"],{S:C.steel2,B:C.blue,W:C.white,G:C.green}],
+  flash:[["......YYYY......",".....YYYY.......","....YYYY........","...YYYYYYYY.....","....YYYYYY......","......YYYY......",".....YYYY.......","....YYYY........","...YYYY.........","..YYY...........",".YY.............","Y..............."],{Y:C.amber}],
+  v4:[["....AAAA........","...AWWWWA.......","...AWBWBA.......","...AWWWWA.......","....AAAA........","..CAAAAAAC......","....AAAA........","....AAAA........","....B..B........","...BB..BB......."],{A:C.blue,W:C.white,B:C.dark,C:C.cyan}],
+  mhc:[["................","BBBBB.MMMM.BBBBB","................","CCCCC.MMMM.CCCCC","................","GGGGG.MMMM.GGGGG","................","YYYYY.MMMM.YYYYY","................"],{B:C.blue,C:C.cyan,G:C.green,Y:C.amber,M:C.amber2}],
+  ddj:[["............YY..","...........YYYY.","............YY..","......HH........","......HH........",".....HHHH.......","....GGGGGGGG....","..GGGGGGGGGGGG..","..SSSSSSSSSSSS..","...SSSSSSSSSS...","....SSSSSSSS....","WWWW..SSSS..WWWW",".WWWWWW..WWWWWW.","..WWWWWWWWWWWW.."],{Y:C.amber,H:C.white,G:C.green,S:C.steel2,W:'#dfe8f5'}]
+};
+document.querySelectorAll('canvas[data-icon]').forEach(cv=>{const ic=ICONS[cv.dataset.icon];const h=ic[0].length,w=ic[0][0].length;draw(cv,ic[0],ic[1],Math.floor((18-w)/2),Math.floor((18-h)/2));});
+// header TV: a little set with a glowing screen and two antennas
+const tv=document.getElementById('tv');
+const TV=["......W.....W...",".......W...W....","........W.W.....","..SSSSSSSSSSSS..","..SKKKKKKKKKKS..","..SKCCCCCCCCKS..","..SKCCCCCCCCKS..","..SKCCCCCCCCKS..","..SKCCCCCCCCKS..","..SKKKKKKKKKKS..","..SSSSSSSSSSSS..","....G......G...."];
+const tctx=tv.getContext('2d');let f=0;
+function tick(){draw(tv,TV,{W:C.white,S:C.steel2,K:C.dark,C:(f%2?C.cyan:C.blue),G:C.steel},8,6);f++;}
+tick();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)setInterval(tick,700);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+<title>DSec 像素解说</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=ZCOOL+QingKe+HuangYou&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+.back{font-family:var(--pixel);font-size:10px;color:var(--amber);text-decoration:none;justify-self:start;letter-spacing:.04em}
+.back:hover{color:var(--accent2)}
+.eyebrow-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:baseline}
+/* Layout: one centered column. A framed 16:9 pixel screen on top, a subtitle track under it,
+   transport controls, then the full storyboard as readable text. Single dark arcade look by choice. */
+:root{
+  --bg:#070b16;
+  --panel:#0f162b;
+  --line:#223055;
+  --fg:#e9edff;
+  --dim:#8a95c4;
+  --accent:#4d6bfe;
+  --accent2:#5ee7ff;
+  --amber:#ffc247;
+  --display:"ZCOOL QingKe HuangYou","Noto Sans SC",sans-serif;
+  --pixel:"Press Start 2P",monospace;
+  --body:"Noto Sans SC",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:28px 56px;
+}
+.wrap{max-width:760px;margin:0 auto;display:grid;gap:22px}
+header{display:grid;gap:6px}
+.eyebrow{font-family:var(--pixel);font-size:10px;letter-spacing:.06em;color:var(--accent2);line-height:1.8}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(36px,7vw,58px);line-height:1.05;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--dim);max-width:60ch}
+.lead a{color:var(--accent2)}
+.screen{
+  position:relative;background:#000;border:4px solid var(--line);
+  box-shadow:0 0 0 4px #0a0f1f,0 0 48px rgba(77,107,254,.28);
+  aspect-ratio:16/9;max-width:100%;cursor:pointer;overflow:hidden;
+}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+.scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)}
+.paused[hidden]{display:none}
+.paused{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-family:var(--pixel);font-size:12px;color:var(--amber);text-shadow:0 0 12px #000,0 0 2px #000;letter-spacing:.1em}
+.cap{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;align-items:baseline;min-height:120px}
+.cap .num{font-family:var(--pixel);font-size:11px;color:var(--amber);letter-spacing:.06em}
+.cap h2{font-family:var(--display);font-weight:400;font-size:clamp(24px,4.6vw,32px);margin:0;line-height:1.15;text-wrap:balance}
+.cap p{grid-column:2;margin:0;color:var(--fg);max-width:62ch;min-width:0}
+.controls{display:grid;gap:14px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.tb{font-family:var(--pixel);font-size:10px;color:var(--fg);background:var(--panel);border:2px solid var(--line);padding:10px 14px;cursor:pointer;letter-spacing:.04em}
+button.tb:hover{border-color:var(--accent)}
+button.tb:focus-visible,button.dot:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+.dots{display:flex;flex-wrap:wrap;gap:6px}
+button.dot{width:14px;height:14px;border:2px solid var(--line);background:var(--panel);padding:0;cursor:pointer}
+button.dot[aria-selected="true"]{background:var(--accent);border-color:var(--accent2)}
+.hint{color:var(--dim);font-size:13px;margin:0}
+footer{color:var(--dim);font-size:13px;border-top:1px solid var(--line);padding-top:16px}
+footer a{color:var(--accent2)}
+@media (max-width:480px){.cap{grid-template-columns:1fr}.cap p{grid-column:1}}
+@media (prefers-reduced-motion:reduce){.scan{display:none}}
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="eyebrow-row"><div class="eyebrow">DEEPSEEK-AI · arXiv 2609.22978 · 2026.09.19</div><a class="back" href="index.html">&lt; 返回频道表</a></div>
+    <h1>DSec 像素解说</h1>
+    <p class="lead">DeepSeek 最新的一篇论文不讲模型，讲的是训练智能体用的「沙箱工厂」：<a href="https://arxiv.org/abs/2609.22978">DeepSeek Elastic Compute</a>。</p>
+  </header>
+
+  <section class="screen" id="screen" aria-label="像素动画画面">
+    <canvas id="cv" width="320" height="180"></canvas>
+    <div class="scan"></div>
+    <div class="paused" id="pausedTag" hidden>PAUSED</div>
+  </section>
+
+  <div class="cap">
+    <div class="num" id="capNum">01 / 11</div>
+    <h2 id="capTitle"></h2>
+    <p id="capText"></p>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button class="tb" id="prev" type="button">&lt;&lt; 上一幕</button>
+      <button class="tb" id="play" type="button">暂停</button>
+      <button class="tb" id="next" type="button">下一幕 &gt;&gt;</button>
+    </div>
+    <div class="dots" id="dots" role="tablist" aria-label="场景"></div>
+    <p class="hint">空格 播放 / 暂停，← → 切换场景，点画面也可以暂停。</p>
+  </div>
+
+  <footer>来源：DeepSeek-AI，<a href="https://arxiv.org/abs/2609.22978">DeepSeek Elastic Compute (DSec): A Sandbox Infrastructure for Effective Agentic Training at Scale</a>，arXiv:2609.22978，2026 年 9 月 19 日提交，131 位作者。画面中的数字均取自论文正文。</footer>
+</main>
+
+<script>
+(function(){
+const W=320,H=180;
+const cv=document.getElementById('cv');
+const ctx=cv.getContext('2d');
+const C={bg:'#0a0f1f',bg2:'#121b36',grid:'#182346',white:'#f2f4ff',dim:'#7f8bbd',blue:'#4d6bfe',blue2:'#2f45b8',cyan:'#5ee7ff',green:'#5bf07a',amber:'#ffc247',amber2:'#ffe08a',red:'#ff5a6a',purple:'#b68cff',ice:'#a8e6ff',iceDeep:'#1e3a66',dark:'#060913',steel:'#2a3658',steel2:'#44568c',steel3:'#5f73b3'};
+
+const R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
+const T=(s,x,y,c,size,align)=>{ctx.font=(size||8)+'px "Press Start 2P", monospace';ctx.fillStyle=c;ctx.textAlign=align||'left';ctx.textBaseline='top';ctx.fillText(s,Math.round(x),Math.round(y));};
+const rnd=i=>{const v=Math.sin(i*127.1+311.7)*43758.5453;return v-Math.floor(v);};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=x=>{x=clamp(x,0,1);return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;};
+const easeOut=x=>{x=clamp(x,0,1);return 1-Math.pow(1-x,3);};
+function sprite(rows,x,y,map,sc){sc=sc||1;for(let j=0;j<rows.length;j++)for(let i=0;i<rows[j].length;i++){const ch=rows[j][i];if(ch!=='.'&&map[ch])R(x+i*sc,y+j*sc,sc,sc,map[ch]);}}
+function box(x,y,w,h,fill,border){R(x,y,w,h,border||C.dark);R(x+1,y+1,w-2,h-2,fill);}
+
+const ROBOT=["..AAAA..",".AWWWWA.",".AWBWBA.",".AWWWWA.","..AAAA..","CAAAAAAC","..AAAA..","..AAAA..","..B..B..",".BB..BB."];
+const ROBOT_WAVE=["..AAAA.C",".AWWWWAC",".AWBWBA.",".AWWWWA.","..AAAA..","CAAAAAA.","..AAAA..","..AAAA..","..B..B..",".BB..BB."];
+const RMAP={A:C.blue,W:C.white,B:C.dark,C:C.cyan};
+const BOLT=["..YY.",".YY..","YYYY.","..YY.",".YY..",".Y..."];
+const LOCK=[".GGG.","G...G","GGGGG","GGBGG","GGGGG"];
+const FACE=["G....G","......","G....G",".GGGG."];
+const CLOUD=["....WWWW........","..WWWWWWWW..WW..",".WWWWWWWWWWWWWW.","WWWWWWWWWWWWWWWW","WWWWWWWWWWWWWWWW",".WWWWWWWWWWWWWW."];
+const SNOW=["..I..","I.I.I",".III.","I.I.I","..I.."];
+const PHONE=["BBBBB","BSSSB","BSSSB","BSSSB","BSSSB","BB.BB","BBBBB"];
+const SHIELD=["GGGGGGGGG","GWWWWWWWG","GWWWWWWWG","GWWGGGWWG","GWWWGWWWG",".GWWWWWG.",".GWWWWWG.","..GWWWG..","...GWG...","....G...."];
+const Z=["ZZZ","..Z",".Z.","ZZZ"];
+
+function stars(t){for(let i=0;i<46;i++){const x=Math.floor(rnd(i)*W),y=Math.floor(rnd(i+100)*120);const tw=Math.sin(t*2+i)*.5+.5;R(x,y,1,1,tw>.5?C.white:C.dim);}}
+function bgGrid(){for(let x=0;x<W;x+=16)R(x,0,1,H,C.grid);for(let y=0;y<H;y+=16)R(0,y,W,1,C.grid);}
+function rack(x,y,w,h,t,i){R(x,y,w,h,C.steel);R(x+2,y+2,w-4,h-4,C.bg2);const n=Math.floor((h-8)/6);for(let r=0;r<n;r++){const yy=y+5+r*6;R(x+4,yy,w-8,3,C.steel2);const on=Math.sin(t*5+i*1.7+r*2.3)>0.2;R(x+w-7,yy+1,2,1,on?C.green:C.red);}}
+function robot(x,y,t,wave){const bob=Math.floor(t*6)%2;sprite(wave&&bob?ROBOT_WAVE:ROBOT,x,y-bob,RMAP);}
+
+/* ---------- scene 0: title ---------- */
+function s0(t){
+  stars(t);
+  for(let i=0;i<8;i++)rack(12+i*38,128,30,42,t,i);
+  R(0,170,W,10,C.steel);
+  const n=Math.floor(clamp((t-0.4)*8,0,4));
+  T('DSec'.slice(0,n),W/2,40,C.white,24,'center');
+  if(n<4&&Math.floor(t*4)%2===0)R(W/2+(n-2)*24+2,40,4,24,C.amber);
+  if(t>1.2)T('DEEPSEEK ELASTIC COMPUTE',W/2,76,C.cyan,8,'center');
+  if(t>2.0)T('A SANDBOX FACTORY FOR AGENTS',W/2,92,C.dim,8,'center');
+  if(t>2.8)T('ARXIV 2609.22978 . 2026.09.19',W/2,108,C.dim,8,'center');
+  robot(clamp(-10+t*30,-10,150),160,t);
+}
+
+/* ---------- scene 1: burst ---------- */
+function s1(t){
+  bgGrid();
+  box(14,50,72,70,C.bg2,C.steel3);
+  T('RL JOB',50,56,C.white,8,'center');
+  for(let i=0;i<6;i++){const on=Math.sin(t*7+i*1.3)>0;R(24+(i%3)*18,72+Math.floor(i/3)*16,12,10,on?C.green:C.steel2);}
+  T('GPUS',50,106,C.dim,8,'center');
+  R(90,84,16,2,C.cyan);R(104,82,2,6,C.cyan);R(106,83,2,4,C.cyan);
+  const need=Math.floor(easeOut(t/5)*32768);
+  T('ASKS FOR '+need.toLocaleString('en-US')+' SANDBOXES',W/2,10,C.amber,8,'center');
+  const cols=24,rows=12,total=cols*rows,filled=Math.round(need/32768*total);
+  for(let k=0;k<total;k++){
+    const c=k%cols,r=Math.floor(k/cols),x=112+c*8,y=36+r*8;
+    if(k<filled){
+      const fresh=filled-k<=10&&filled<total;
+      R(x,y,6,6,fresh?C.white:C.blue);
+      if(t>4.5&&rnd(k)<0.9&&Math.floor(t*2+k)%4===0)R(x+2,y-2,2,1,C.dim);
+    }else R(x,y,6,6,C.grid);
+  }
+  if(t>3)T('MEDIAN LIFE 17 MIN, P99 OVER 3 H',W/2,140,C.dim,8,'center');
+  if(t>4.5)T('STATEFUL. LONG-LIVED. MOSTLY ASLEEP.',W/2,156,C.cyan,8,'center');
+}
+
+/* ---------- scene 2: four backends ---------- */
+function s2(t){
+  bgGrid();R(0,140,W,40,C.bg2);R(0,140,W,1,C.steel3);
+  T('FOUR BACKENDS, ONE API',W/2,8,C.cyan,8,'center');
+  const names=['FnCall','Container','MicroVM','Full VM'],subs=['MS TASKS','SWE+TOOLS','ISOLATED','GUI+OS'];
+  for(let i=0;i<4;i++){
+    const cx=40+i*80,k=ease((t-i*1.4)/0.8);if(k<=0)continue;
+    ctx.save();ctx.beginPath();ctx.rect(cx-40,0,80,140);ctx.clip();
+    const fy=140+(1-k)*80;
+    if(i===0){box(cx-13,fy-30,26,30,C.bg2,C.amber);const on=Math.sin(t*10)>0;sprite(BOLT,cx-5,fy-25,{Y:on?C.amber2:C.amber},2);}
+    if(i===1){for(let s=0;s<3;s++){box(cx-14,fy-12*(s+1),28,12,C.blue2,C.blue);R(cx-10,fy-12*(s+1)+5,20,2,C.white);}}
+    if(i===2){box(cx-15,fy-36,30,36,C.steel,C.cyan);sprite(LOCK,cx-5,fy-26,{G:C.cyan,B:C.dark},2);}
+    if(i===3){box(cx-20,fy-48,40,48,C.steel,C.steel3);R(cx-13,fy-42,26,20,C.dark);sprite(FACE,cx-6,fy-38,{G:C.green},2);R(cx-13,fy-16,26,8,C.steel2);}
+    ctx.restore();
+    if(k>=1){T(names[i],cx,148,C.white,8,'center');T(subs[i],cx,162,C.dim,8,'center');robot(cx+22,130,t);}
+  }
+}
+
+/* ---------- scene 3: SDK ---------- */
+const CODE=[
+  ['>>> sb = dsec.create(',C.white],
+  ['      type="container",',C.cyan],
+  ['      image="swe-py311",',C.cyan],
+  ['      cpu=4, mem="8G", ttl="2h",',C.cyan],
+  ['      net={"pypi": ALLOW,',C.cyan],
+  ['           "npm": DENY})',C.cyan],
+  ['>>> sb.run_shell("pytest -q")',C.white],
+  ['.......... 10 passed',C.green],
+  ['>>> sb.pack_diff()  # snapshot',C.white],
+  ['OK',C.green]];
+function s3(t){
+  bgGrid();
+  box(8,14,304,158,C.dark,C.steel3);R(9,15,302,10,C.steel3);T('libdsec',14,16,C.dark,8);
+  let budget=Math.max(0,(t-0.3)*26);
+  for(let i=0;i<CODE.length;i++){
+    const s=CODE[i][0];if(budget<=0)break;
+    const n=Math.min(s.length,Math.floor(budget));
+    T(s.slice(0,n),14,32+i*13,CODE[i][1],8);
+    if(n<s.length){if(Math.floor(t*4)%2===0)R(14+n*8,32+i*13,8,8,C.amber);break;}
+    budget-=s.length+3;
+  }
+  if(t>7.2)T('YOU PICK THE BACKEND',W/2,160,C.dim,8,'center');
+}
+
+/* ---------- scene 4: scheduling ---------- */
+function s4(t){
+  bgGrid();
+  box(120,8,80,18,C.bg2,C.blue);T('APISERVER',160,13,C.white,8,'center');
+  T('POWER OF K CHOICES, K=3',W/2,34,C.cyan,8,'center');
+  const n=12,cyc=2.4,cc=Math.floor(t/cyc),ph=(t%cyc)/cyc;
+  const loads=[];for(let i=0;i<n;i++)loads[i]=10+rnd(i+50)*30;
+  const pick=c=>{const cand=[];for(let j=0;j<3;j++){let v=Math.floor(rnd(c*17+j*5+3)*n);while(cand.includes(v))v=(v+1)%n;cand.push(v);}return cand;};
+  for(let c=0;c<cc;c++){const cand=pick(c);let b=cand[0];for(const v of cand)if(loads[v]<loads[b])b=v;loads[b]+=8;}
+  const cand=pick(cc);let best=cand[0];for(const v of cand)if(loads[v]<loads[best])best=v;
+  for(let i=0;i<n;i++){
+    const x=14+i*25,isC=cand.includes(i)&&ph>0.3,isB=i===best&&ph>0.65;
+    box(x,96,20,64,C.bg2,isB?C.green:isC?C.amber:C.steel2);
+    let l=loads[i];if(isB&&ph>0.8)l+=8*ease((ph-0.8)/0.2);
+    const h=Math.round(clamp(l,0,60)/60*56);R(x+4,158-h,12,h,isB?C.green:C.blue);
+    if(isC&&!isB)T('?',x+10,84,C.amber,8,'center');
+    if(isB)T('OK',x+10,84,C.green,8,'center');
+  }
+  if(ph<0.3){R(157,28+ph/0.3*50,6,6,C.white);}
+  else if(ph>0.65&&ph<0.8){const k=(ph-0.65)/0.15,x1=14+best*25+7;R(157+(x1-157)*k,78+22*k,6,6,C.white);}
+  T('5000+ CREATES PER SECOND',W/2,166,C.dim,8,'center');
+}
+
+/* ---------- scene 5: images ---------- */
+function s5(t){
+  bgGrid();
+  T('EAGER PULL',82,14,C.red,8,'center');T('ON-DEMAND EROFS',237,14,C.green,8,'center');
+  const pL=clamp(t/6,0,1),pR=clamp(t/3.5,0,1);
+  for(let k=0;k<60;k++){
+    const c=k%12,r=Math.floor(k/12),y=28+r*11;
+    R(16+c*11,y,9,9,k<pL*60?C.red:C.grid);
+    const hot=rnd(k+900)<0.12;
+    R(171+c*11,y,9,9,hot&&k<pR*60?C.green:hot?C.steel2:C.grid);
+  }
+  T(pL<1?Math.floor(pL*62)+' MIN':'60+ MIN',82,88,C.white,8,'center');T('1600 GB WRITES',82,100,C.dim,8,'center');
+  T(pR<1?Math.floor(pR*35)+' MIN':'35 MIN',237,88,C.white,8,'center');T('700 GB WRITES',237,100,C.dim,8,'center');
+  T('8192 CONTAINERS, SAME IMAGE',W/2,112,C.cyan,8,'center');
+  const names=['BASE','WORKSPACE','TOOLKIT'],cols2=[C.blue2,C.steel3,C.purple];
+  for(let i=0;i<3;i++){const k=ease((t-3-i*0.5)/0.7);if(k<=0)continue;const x=50+i*14+(1-k)*220,y=126+i*14;R(x,y,190,12,cols2[i]);R(x,y,190,1,C.white);T(names[i],x+6,y+2,C.white,8);}
+  if(t>5.5)T('LAYERS STACK LIKE FILM',W/2,168,C.dim,8,'center');
+}
+
+/* ---------- scene 6: sleeping sandboxes ---------- */
+function s6(t){
+  stars(t);
+  T('3200+ CONTAINERS PER NODE',W/2,6,C.cyan,8,'center');
+  R(40,20,200,160,C.steel);R(44,24,192,156,C.bg2);
+  const ringK=Math.floor(t/1.3),ringIdx=Math.floor(rnd(ringK*7+11)*70),ringPh=t%1.3;
+  let ringPos=null;
+  for(let i=0;i<70;i++){
+    const c=i%10,r=Math.floor(i/10),x=49+c*19,y=28+r*20;
+    const awake=rnd(i*3+5)<0.1,ring=i===ringIdx&&ringPh<1.0;
+    R(x,y,14,13,C.dark);
+    if(ring||awake){R(x+1,y+1,12,11,ring?C.amber2:C.amber);if(ring)ringPos=[x,y];}
+    else{R(x+1,y+1,12,11,C.steel);const zo=Math.floor((t*6+rnd(i)*12)%12);if(zo<9)sprite(Z,x+8,y+3-Math.floor(zo/3),{Z:C.dim});}
+  }
+  if(ringPos&&Math.floor(ringPh*8)%2===0)sprite(PHONE,ringPos[0]+4,ringPos[1]-9,{B:C.white,S:C.green});
+  box(256,36,30,110,C.bg2,C.steel3);R(259,138,24,5,C.green);
+  T('CPU',271,24,C.dim,8,'center');T('5%',271,150,C.green,8,'center');T('AVG',271,162,C.dim,8,'center');
+  T('90% IDLE',20,166,C.dim,8,'left');
+}
+
+/* ---------- scene 7: preemption ---------- */
+function s7(t){
+  bgGrid();
+  const pre=t>2&&t<3.2,frozen=t>=3.2&&t<5.8,res=t>=5.8;
+  const flash=Math.floor(t*8)%2===0;
+  box(110,8,100,20,C.bg2,(pre&&flash)?C.red:res?C.green:C.steel3);
+  T(pre?'PREEMPTED':res?'GPU BACK':'GPU POOL',160,14,pre?C.red:C.white,8,'center');
+  for(let k=0;k<24;k++){
+    const c=k%8,r=Math.floor(k/8),x=16+c*37,y=44+r*30,isVm=k%5===0;
+    if(frozen){
+      const killed=isVm&&t>3.6+rnd(k)*1.2;
+      box(x,y,30,20,killed?C.bg2:C.iceDeep,killed?C.steel2:C.white);
+      if(!killed)sprite(SNOW,x+12,y+7,{I:C.white});else T('X',x+15,y+6,C.steel3,8,'center');
+    }else{
+      box(x,y,30,20,C.blue2,isVm?C.cyan:C.blue);
+      const on=Math.sin(t*9+k*1.9)>0.3;R(x+4,y+4,6,4,on?C.green:C.dark);R(x+12,y+4,14,4,C.dark);R(x+4,y+11,22,2,C.steel3);
+    }
+  }
+  if(frozen){
+    for(let i=0;i<18;i++){const x=Math.floor(rnd(i+400)*W),y=Math.floor((t*22+rnd(i+500)*180)%180);R(x,y,1,1,C.white);}
+    T('ALL SANDBOXES PAUSED',W/2,138,C.ice,8,'center');
+    T('CONTAINER: PAUSE + RECLAIM',W/2,152,C.dim,8,'center');
+    T('MICROVM: SNAPSHOT, THEN KILL',W/2,164,C.dim,8,'center');
+  }else if(res){T('RESUMED ON NEXT REQUEST',W/2,150,C.green,8,'center');}
+  else if(pre){T('GPU PREEMPTED',W/2,150,C.red,8,'center');}
+  else T('ROLLOUTS RUNNING',W/2,150,C.dim,8,'center');
+}
+
+/* ---------- scene 8: scale + cloud burst ---------- */
+function s8(t){
+  bgGrid();
+  const util=40+56*ease(t/5);
+  box(24,30,30,124,C.bg2,C.steel3);
+  const h=Math.round(util/100*118);R(27,151-h,24,h,util>80?C.amber:C.blue);
+  R(24,57,30,1,C.red);T('80%',58,53,C.red,8);
+  T(Math.round(util)+'%',39,160,C.white,8,'center');T('UTIL',39,170,C.dim,8,'center');
+  sprite(CLOUD,90,20,{W:C.white},3);T('CLOUD',114,42,C.dim,8,'center');
+  if(util>80){const n=Math.floor((util-80)/16*8);for(let i=0;i<n;i++){const k=(t*0.6+rnd(i+700))%1;R(54+54*k,56-28*k,5,5,C.amber);}}
+  const stats=[['160','NODES'],['30K','CORES'],['250 TB','DRAM'],['3M','SANDBOXES/DAY'],['380K','PEAK CONCURRENT'],['200','CLOUD VMS, 30%']];
+  for(let i=0;i<stats.length;i++){if(t<0.4+i*0.6)break;const y=30+i*22;T(stats[i][0],176,y,C.amber,8);T(stats[i][1],176,y+10,C.dim,8);}
+  if(t>5.2)T('OVER 80%: BURST TO CLOUD',W/2+20,168,C.amber,8,'center');
+  else T('ONE SCALE UNIT',W/2+20,168,C.dim,8,'center');
+}
+
+/* ---------- scene 9: incidents & guardrails ---------- */
+function s9(t){
+  if(t<4.2){
+    R(0,0,W,H,C.dark);T('$ yes',8,8,C.white,8);
+    const start=0.6;
+    if(t>start){
+      for(let c=0;c<40;c++){const n=Math.min(19,Math.floor((t-start)*9+rnd(c+300)*4));for(let r=0;r<n;r++)T('y',c*8,20+r*8,r===n-1?C.white:C.green,8);}
+      const gb=Math.min(38,(t-start)*11);T('STDOUT '+gb.toFixed(1)+' GB',W-8,4,C.red,8,'right');
+    }
+  }else{
+    bgGrid();const u=t-4.2;
+    T('ANTI REWARD HACKING',W/2,10,C.cyan,8,'center');
+    sprite(SHIELD,138,46,{G:C.cyan,W:C.blue2},5);
+    robot(40,88,t);
+    for(let i=0;i<3;i++){const k=(u*0.9+i*0.33)%1;const x=52+k*84;if(k<0.95)R(x,96+i*4,8,2,C.red);else R(132,94+i*4,4,6,C.amber2);}
+    T('APPARMOR: FILES + SOCKETS',W/2,118,C.white,8,'center');
+    T('EBPF NET ALLOWLIST PER SANDBOX',W/2,132,C.white,8,'center');
+    T('XFS IOCTL TRICK: BLOCKED',W/2,152,C.amber,8,'center');
+  }
+}
+
+/* ---------- scene 10: end ---------- */
+function s10(t){
+  stars(t);
+  for(let i=0;i<8;i++)rack(12+i*38,140,30,30,t,i);
+  R(0,170,W,10,C.steel);
+  T('DSec',W/2,28,C.white,16,'center');
+  T('RUNS EVERY SANDBOX WORKLOAD',W/2,54,C.cyan,8,'center');
+  T('FROM V3.2 TO V4.1',W/2,68,C.cyan,8,'center');
+  T('ARXIV 2609.22978',W/2,92,C.dim,8,'center');
+  T('131 AUTHORS, DEEPSEEK-AI',W/2,106,C.dim,8,'center');
+  for(let i=0;i<5;i++)robot(100+i*26,160,t+i*0.37,true);
+  if(Math.floor(t*2)%2===0)T('REPLAY',W/2,124,C.amber,8,'center');
+}
+
+const scenes=[
+ {dur:7,draw:s0,title:'DeepSeek 最新论文：DSec',text:'2026 年 9 月 19 日提交的《DeepSeek Elastic Compute》。它不讲模型，讲的是模型训练背后那座「沙箱工厂」：智能体在里面写代码、跑测试、点 GUI，强化学习靠它产出轨迹。全文 31 页，131 位作者。'},
+ {dur:8,draw:s1,title:'问题：沙箱来得像洪水',text:'一个 RL 任务可能一次申请 3.2 万个沙箱。它们有状态、活得久（中位 17 分钟，1% 超过 3 小时），但大部分时间只是在等模型说下一句话。'},
+ {dur:9,draw:s2,title:'四种沙箱后端',text:'FnCall 跑毫秒级无状态任务（判题、编译、GPU 算子）；Container 是主力，给软件工程和工具调用；MicroVM 用 Firecracker 做强隔离；Full VM 用 QEMU 跑完整操作系统和 GUI。生产上容器和 microVM 占绝大多数。'},
+ {dur:9,draw:s3,title:'一个 SDK：libdsec',text:'调用方一行创建沙箱：类型、镜像、CPU 和内存、存活时间、网络规则（允许 PyPI、拒绝 NPM），然后 run_shell 执行命令。论文明说它故意不做「全语义抽象」，用哪种后端由调用方自己选。'},
+ {dur:9,draw:s4,title:'调度：随机抽 k 台，挑最闲的',text:'无状态 apiserver 接请求，placement engine 用 power-of-k-choices：随机采样 k 个节点，选负载最低的，节点上的 edge 做最终准入。一个规模单元峰值每秒 5000 多次创建。'},
+ {dur:9,draw:s5,title:'镜像：只取用到的那 4 到 13%',text:'镜像库超过 130 TB，复用率很低。EROFS 元数据放本地，文件数据按需从 3FS 拉。8192 个容器并发启动：预先全量拉取要 60 多分钟，按需只要 35 分钟，磁盘写入少 57%。镜像按 base、workspace、toolkit 分层，换一个工具包只重建一层。'},
+ {dur:8,draw:s6,title:'睡着的沙箱',text:'90% 的沙箱平均只用不到 5% 的 CPU，像一栋楼里的人都在等电话（模型的下一次调用）。所以 CPU 可以大胆超卖：单节点稳定跑 3200 多个容器或 800 多个 microVM。'},
+ {dur:8,draw:s7,title:'GPU 被抢占？全体暂停',text:'训练 GPU 池是可抢占的。被抢占时 RL 框架暂停所有沙箱：容器 docker pause 并回收内存；microVM 把内存和状态快照落盘，然后直接杀掉 Firecracker 进程。下一个请求到来，原地恢复。'},
+ {dur:8,draw:s8,title:'规模与云上溢出',text:'一个规模单元：约 160 个节点、3 万核、250 TB 内存，每天 300 万个沙箱，峰值 38 万并发。本地利用率超过 80% 就溢出到云上，约 200 台云 VM 吃掉了 30% 的峰值流量。'},
+ {dur:9,draw:s9,title:'踩过的坑与护栏',text:'一个 yes 命令无上限输出堆出几十 GB；一个智能体用 XFS 的 ioctl 绕过文件控制，写坏了文件系统元数据。于是有了 AppArmor 文件和 socket 策略、每个沙箱独立的 eBPF 网络白名单，专防奖励作弊。'},
+ {dur:7,draw:s10,title:'从 V3.2 到 V4.1',text:'DSec 承担了 DeepSeek V3.2 到 V4.1 所有训练和评测的沙箱负载。从 V4.1 起，rollout 搬出可抢占 GPU 池，拆成智能体沙箱和 worker 容器，再也不用回放命令日志来恢复。'}
+];
+
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let idx=0,st=0,playing=!reduced,last=performance.now();
+const capNum=document.getElementById('capNum'),capTitle=document.getElementById('capTitle'),capText=document.getElementById('capText');
+const dots=document.getElementById('dots'),playBtn=document.getElementById('play'),pausedTag=document.getElementById('pausedTag');
+const pad=n=>String(n+1).padStart(2,'0');
+
+scenes.forEach((s,i)=>{
+  const d=document.createElement('button');d.className='dot';d.type='button';d.setAttribute('role','tab');d.setAttribute('aria-label',pad(i)+' '+s.title);d.addEventListener('click',()=>go(i));dots.appendChild(d);
+});
+function setCaption(){
+  capNum.textContent=pad(idx)+' / '+scenes.length;capTitle.textContent=scenes[idx].title;capText.textContent=scenes[idx].text;
+  [...dots.children].forEach((d,i)=>d.setAttribute('aria-selected',i===idx?'true':'false'));
+}
+function go(i){idx=(i+scenes.length)%scenes.length;st=reduced?scenes[idx].dur*0.92:0;setCaption();}
+function setPlaying(p){playing=p;playBtn.textContent=p?'暂停':'播放';pausedTag.hidden=p;last=performance.now();}
+document.getElementById('prev').addEventListener('click',()=>go(idx-1));
+document.getElementById('next').addEventListener('click',()=>go(idx+1));
+playBtn.addEventListener('click',()=>setPlaying(!playing));
+document.getElementById('screen').addEventListener('click',()=>setPlaying(!playing));
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='BUTTON'&&e.key===' ')return;
+  if(e.key===' '){e.preventDefault();setPlaying(!playing);}
+  else if(e.key==='ArrowRight')go(idx+1);
+  else if(e.key==='ArrowLeft')go(idx-1);
+});
+document.addEventListener('visibilitychange',()=>{last=performance.now();});
+
+function frame(now){
+  const dt=Math.min(0.1,(now-last)/1000);last=now;
+  if(playing){st+=dt;if(st>=scenes[idx].dur){idx=(idx+1)%scenes.length;st=0;setCaption();}}
+  R(0,0,W,H,C.bg);
+  scenes[idx].draw(st);
+  R(0,H-2,W*clamp(st/scenes[idx].dur,0,1),2,C.amber);
+  requestAnimationFrame(frame);
+}
+setCaption();setPlaying(playing);
+if(reduced)st=scenes[0].dur*0.92;
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}</style>
+<title>DeepSeek-V4 像素解说</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=ZCOOL+QingKe+HuangYou&family=Noto+Sans+SC:wght@400;500&display=swap">
+<style>
+.back{font-family:var(--pixel);font-size:10px;color:var(--amber);text-decoration:none;justify-self:start;letter-spacing:.04em}
+.back:hover{color:var(--accent2)}
+.eyebrow-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 16px;align-items:baseline}
+/* Layout: one centered column. A framed 16:9 pixel screen on top, a subtitle track under it,
+   transport controls, then the full storyboard as readable text. Single dark arcade look by choice. */
+:root{
+  --bg:#070b16;
+  --panel:#0f162b;
+  --line:#223055;
+  --fg:#e9edff;
+  --dim:#8a95c4;
+  --accent:#4d6bfe;
+  --accent2:#5ee7ff;
+  --amber:#ffc247;
+  --display:"ZCOOL QingKe HuangYou","Noto Sans SC",sans-serif;
+  --pixel:"Press Start 2P",monospace;
+  --body:"Noto Sans SC",system-ui,-apple-system,sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.75;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:28px 56px;
+}
+.wrap{max-width:760px;margin:0 auto;display:grid;gap:22px}
+header{display:grid;gap:6px}
+.eyebrow{font-family:var(--pixel);font-size:10px;letter-spacing:.06em;color:var(--accent2);line-height:1.8}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(36px,7vw,58px);line-height:1.05;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--dim);max-width:60ch}
+.lead a{color:var(--accent2)}
+.screen{
+  position:relative;background:#000;border:4px solid var(--line);
+  box-shadow:0 0 0 4px #0a0f1f,0 0 48px rgba(77,107,254,.28);
+  aspect-ratio:16/9;max-width:100%;cursor:pointer;overflow:hidden;
+}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+.scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px)}
+.paused[hidden]{display:none}
+.paused{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;font-family:var(--pixel);font-size:12px;color:var(--amber);text-shadow:0 0 12px #000,0 0 2px #000;letter-spacing:.1em}
+.cap{display:grid;grid-template-columns:auto 1fr;gap:2px 14px;align-items:baseline;min-height:120px}
+.cap .num{font-family:var(--pixel);font-size:11px;color:var(--amber);letter-spacing:.06em}
+.cap h2{font-family:var(--display);font-weight:400;font-size:clamp(24px,4.6vw,32px);margin:0;line-height:1.15;text-wrap:balance}
+.cap p{grid-column:2;margin:0;color:var(--fg);max-width:62ch;min-width:0}
+.controls{display:grid;gap:14px}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button.tb{font-family:var(--pixel);font-size:10px;color:var(--fg);background:var(--panel);border:2px solid var(--line);padding:10px 14px;cursor:pointer;letter-spacing:.04em}
+button.tb:hover{border-color:var(--accent)}
+button.tb:focus-visible,button.dot:focus-visible{outline:2px solid var(--accent2);outline-offset:2px}
+.dots{display:flex;flex-wrap:wrap;gap:6px}
+button.dot{width:14px;height:14px;border:2px solid var(--line);background:var(--panel);padding:0;cursor:pointer}
+button.dot[aria-selected="true"]{background:var(--accent);border-color:var(--accent2)}
+.hint{color:var(--dim);font-size:13px;margin:0}
+footer{color:var(--dim);font-size:13px;border-top:1px solid var(--line);padding-top:16px}
+footer a{color:var(--accent2)}
+@media (max-width:480px){.cap{grid-template-columns:1fr}.cap p{grid-column:1}}
+@media (prefers-reduced-motion:reduce){.scan{display:none}}
+</style>
+
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="eyebrow-row"><div class="eyebrow">DEEPSEEK-AI · arXiv 2606.19348 · 2026.04.26</div><a class="back" href="index.html">&lt; 返回频道表</a></div>
+    <h1>DeepSeek-V4 像素解说</h1>
+    <p class="lead">DeepSeek 2026 年 4 月的技术报告《<a href="https://arxiv.org/abs/2606.19348">DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence</a>》：1.6T 参数、100 万 token 上下文是怎么算得起的。</p>
+  </header>
+
+  <section class="screen" id="screen" aria-label="像素动画画面">
+    <canvas id="cv" width="320" height="180"></canvas>
+    <div class="scan"></div>
+    <div class="paused" id="pausedTag" hidden>PAUSED</div>
+  </section>
+
+  <div class="cap">
+    <div class="num" id="capNum">01 / 11</div>
+    <h2 id="capTitle"></h2>
+    <p id="capText"></p>
+  </div>
+
+  <div class="controls">
+    <div class="btns">
+      <button class="tb" id="prev" type="button">&lt;&lt; 上一幕</button>
+      <button class="tb" id="play" type="button">暂停</button>
+      <button class="tb" id="next" type="button">下一幕 &gt;&gt;</button>
+    </div>
+    <div class="dots" id="dots" role="tablist" aria-label="场景"></div>
+    <p class="hint">空格 播放 / 暂停，← → 切换场景，点画面也可以暂停。</p>
+  </div>
+
+  <footer>来源：DeepSeek-AI，<a href="https://arxiv.org/abs/2606.19348">DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence</a>，arXiv:2606.19348，2026 年 4 月 26 日提交（预览版）。架构细节里的部分数字来自报告正文的自动提取，核心结论和基准表为原文数字。</footer>
+</main>
+
+<script>
+(function(){
+const W=320,H=180;
+const cv=document.getElementById('cv');
+const ctx=cv.getContext('2d');
+const C={bg:'#0a0f1f',bg2:'#121b36',grid:'#182346',white:'#f2f4ff',dim:'#7f8bbd',blue:'#4d6bfe',blue2:'#2f45b8',cyan:'#5ee7ff',green:'#5bf07a',amber:'#ffc247',amber2:'#ffe08a',red:'#ff5a6a',purple:'#b68cff',ice:'#a8e6ff',iceDeep:'#1e3a66',dark:'#060913',steel:'#2a3658',steel2:'#44568c',steel3:'#5f73b3'};
+
+const R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));};
+const T=(s,x,y,c,size,align)=>{ctx.font=(size||8)+'px "Press Start 2P", monospace';ctx.fillStyle=c;ctx.textAlign=align||'left';ctx.textBaseline='top';ctx.fillText(s,Math.round(x),Math.round(y));};
+const rnd=i=>{const v=Math.sin(i*127.1+311.7)*43758.5453;return v-Math.floor(v);};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const ease=x=>{x=clamp(x,0,1);return x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;};
+const easeOut=x=>{x=clamp(x,0,1);return 1-Math.pow(1-x,3);};
+function sprite(rows,x,y,map,sc){sc=sc||1;for(let j=0;j<rows.length;j++)for(let i=0;i<rows[j].length;i++){const ch=rows[j][i];if(ch!=='.'&&map[ch])R(x+i*sc,y+j*sc,sc,sc,map[ch]);}}
+function box(x,y,w,h,fill,border){R(x,y,w,h,border||C.dark);R(x+1,y+1,w-2,h-2,fill);}
+
+const ROBOT=["..AAAA..",".AWWWWA.",".AWBWBA.",".AWWWWA.","..AAAA..","CAAAAAAC","..AAAA..","..AAAA..","..B..B..",".BB..BB."];
+const ROBOT_WAVE=["..AAAA.C",".AWWWWAC",".AWBWBA.",".AWWWWA.","..AAAA..","CAAAAAA.","..AAAA..","..AAAA..","..B..B..",".BB..BB."];
+const RMAP={A:C.blue,W:C.white,B:C.dark,C:C.cyan};
+const BOLT=["..YY.",".YY..","YYYY.","..YY.",".YY..",".Y..."];
+const LOCK=[".GGG.","G...G","GGGGG","GGBGG","GGGGG"];
+const FACE=["G....G","......","G....G",".GGGG."];
+const CLOUD=["....WWWW........","..WWWWWWWW..WW..",".WWWWWWWWWWWWWW.","WWWWWWWWWWWWWWWW","WWWWWWWWWWWWWWWW",".WWWWWWWWWWWWWW."];
+const SNOW=["..I..","I.I.I",".III.","I.I.I","..I.."];
+const PHONE=["BBBBB","BSSSB","BSSSB","BSSSB","BSSSB","BB.BB","BBBBB"];
+const SHIELD=["GGGGGGGGG","GWWWWWWWG","GWWWWWWWG","GWWGGGWWG","GWWWGWWWG",".GWWWWWG.",".GWWWWWG.","..GWWWG..","...GWG...","....G...."];
+const Z=["ZZZ","..Z",".Z.","ZZZ"];
+
+function stars(t){for(let i=0;i<46;i++){const x=Math.floor(rnd(i)*W),y=Math.floor(rnd(i+100)*120);const tw=Math.sin(t*2+i)*.5+.5;R(x,y,1,1,tw>.5?C.white:C.dim);}}
+function bgGrid(){for(let x=0;x<W;x+=16)R(x,0,1,H,C.grid);for(let y=0;y<H;y+=16)R(0,y,W,1,C.grid);}
+function rack(x,y,w,h,t,i){R(x,y,w,h,C.steel);R(x+2,y+2,w-4,h-4,C.bg2);const n=Math.floor((h-8)/6);for(let r=0;r<n;r++){const yy=y+5+r*6;R(x+4,yy,w-8,3,C.steel2);const on=Math.sin(t*5+i*1.7+r*2.3)>0.2;R(x+w-7,yy+1,2,1,on?C.green:C.red);}}
+function robot(x,y,t,wave){const bob=Math.floor(t*6)%2;sprite(wave&&bob?ROBOT_WAVE:ROBOT,x,y-bob,RMAP);}
+
+/* ---------- DeepSeek-V4 ---------- */
+function b0(t){
+  stars(t);for(let i=0;i<8;i++)rack(12+i*38,128,30,42,t,i);R(0,170,W,10,C.steel);
+  const n=Math.floor(clamp((t-0.4)*10,0,11));T('DEEPSEEK-V4'.slice(0,n),W/2,36,C.white,16,'center');
+  if(t>1.6)T('MILLION-TOKEN CONTEXT',W/2,64,C.cyan,8,'center');if(t>2.2)T('HIGHLY EFFICIENT',W/2,78,C.cyan,8,'center');
+  if(t>2.8)T('PRO 1.6T . FLASH 284B',W/2,98,C.amber,8,'center');if(t>3.4)T('ARXIV 2606.19348 . 2026.04.26',W/2,112,C.dim,8,'center');
+  robot(clamp(-10+t*30,-10,150),160,t);
+}
+function b1(t){
+  bgGrid();T('TWO MODELS, ONE ARCHITECTURE',W/2,8,C.cyan,8,'center');
+  sprite(ROBOT,58,24,RMAP,3);sprite(ROBOT,238,24,{A:C.amber,W:C.white,B:C.dark,C:C.cyan},3);
+  T('V4-PRO',70,58,C.white,8,'center');T('1.6T TOTAL',70,70,C.amber,8,'center');T('49B ACTIVE',70,82,C.dim,8,'center');
+  T('V4-FLASH',250,58,C.white,8,'center');T('284B TOTAL',250,70,C.amber,8,'center');T('13B ACTIVE',250,82,C.dim,8,'center');
+  for(let i=0;i<192;i++){const c=i%32,r=Math.floor(i/32);const lit=t>1.5&&rnd(i+40)<0.031;R(16+c*9,102+r*9,7,7,lit?C.green:C.steel);}
+  T(t>1.5?'EACH TOKEN READS 49 OF 1600 PAGES':'A 1600-PAGE BOOK',W/2,160,t>1.5?C.green:C.dim,8,'center');
+}
+function b2(t){
+  bgGrid();T('MOE: 384 EXPERTS, 6 + 1 PER TOKEN',W/2,8,C.cyan,8,'center');
+  const k=Math.floor(t/1.2),ph=(t%1.2)/1.2;
+  const picks=[];for(let j=0;j<6;j++)picks.push(Math.floor(rnd(k*13+j*7+1)*384));
+  for(let i=0;i<384;i++){const c=i%32,r=Math.floor(i/32);const on=picks.includes(i)&&ph>0.3;R(24+c*7,24+r*7,5,5,on?C.green:C.steel);}
+  box(256,24,56,84,C.bg2,C.amber);T('1',284,52,C.amber,8,'center');T('SHARED',284,66,C.amber,8,'center');
+  R(24+ph*224,116,5,5,C.white);T('TOKEN',W/2,124,C.dim,8,'center');
+  T('PRO 384 / FLASH 256 ROUTED',W/2,142,C.dim,8,'center');
+  if(t>3)T('FIRST 3 MOE LAYERS: HASH ROUTING',W/2,158,C.amber,8,'center');
+}
+function b3(t){
+  bgGrid();T('COMPRESSED SPARSE ATTENTION',W/2,8,C.cyan,8,'center');
+  T('TOKENS',16,22,C.dim,8);for(let i=0;i<64;i++)R(16+i*4.5,34,3,6,C.cyan);
+  const k=ease((t-0.8)/1.2);T('1 CARD PER 4 TOKENS',16,48,C.dim,8);
+  if(k>0)for(let i=0;i<16;i++)R(16+i*18,34+28*k,14,10,C.amber);
+  if(t>2.4){sprite(BOLT,150,84,{Y:C.amber2},2);T('LIGHTNING INDEXER',W/2,102,C.amber,8,'center');}
+  if(t>3.2){for(let i=0;i<16;i++){const top=rnd(i+300)<0.3;R(16+i*18,118,14,10,top?C.white:C.steel);}T('TOP-K 512 FLASH / 1024 PRO',W/2,136,C.white,8,'center');}
+  if(t>4.5)T('ATTEND ONLY TO THOSE CARDS',W/2,156,C.green,8,'center');
+}
+function b4(t){
+  bgGrid();T('HCA + LAYER INTERLEAVE',W/2,8,C.cyan,8,'center');
+  for(let i=0;i<32;i++)R(16+i*4,28,3,5,C.cyan);T('128 TOKENS',16,38,C.dim,8);
+  const k=ease((t-0.6)/1);R(16+56*k,52,14,10,C.purple);T('1 CARD',96,54,C.purple,8);T('DENSE ATTN',16,68,C.dim,8);
+  const n=Math.min(16,Math.floor(t*4));for(let i=0;i<n;i++){const hca=i%2===1,y=160-i*8;R(200,y,90,6,hca?C.purple:C.blue);}
+  T('CSA',192,160,C.blue,8,'right');T('HCA',192,152,C.purple,8,'right');
+  if(t>4.5){T('PRO: 61 LAYERS',16,96,C.white,8);T('FLASH: 43',16,108,C.white,8);}
+  if(t>5.5){T('FLASH OPENS WITH',16,128,C.amber,8);T('2 SWA LAYERS',16,140,C.amber,8);}
+}
+function b5(t){
+  bgGrid();T('MHC: 4-LANE RESIDUAL STREAM',W/2,8,C.cyan,8,'center');
+  const cols=[C.blue,C.cyan,C.green,C.amber];
+  for(let l=0;l<4;l++){const y=36+l*14;R(16,y,120,6,cols[l]);R(184,y,120,6,cols[l]);}
+  box(140,30,40,56,C.bg2,C.white);
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){const v=0.5+0.5*Math.sin(t+r*2+c);R(144+c*9,34+r*12,7,9,'rgba(255,194,71,'+(0.2+v*0.6).toFixed(2)+')');}
+  for(let i=0;i<4;i++){const k=((t*0.5)+i*0.25)%1;R(16+k*290,37+((i*7)%4)*14,6,4,C.white);}
+  T('DOUBLY STOCHASTIC MIX',W/2,100,C.amber,8,'center');T('ROWS = 1, COLS = 1',W/2,114,C.dim,8,'center');
+  if(t>2.5)T('SINKHORN-KNOPP, 20 STEPS',W/2,134,C.dim,8,'center');
+  if(t>4)T('SPECTRAL NORM <= 1, NO BLOWUP',W/2,156,C.green,8,'center');
+}
+function b6(t){
+  bgGrid();T('PRE-TRAINING',W/2,8,C.cyan,8,'center');
+  const tok=easeOut(t/5)*32;T(tok.toFixed(1)+'T TOKENS',W/2,26,C.amber,16,'center');
+  for(let i=0;i<30;i++){const x=(i*11+t*60)%W;R(x,52,6,6,C.cyan);}
+  const items=[['FP8 MOST OF THE STACK',C.white],['FP4 ROUTED EXPERT WEIGHTS',C.green],['MUON OPTIMIZER',C.amber],['MULTI-TOKEN PREDICTION',C.purple],['FUSED MOE KERNEL, TILELANG',C.cyan]];
+  for(let i=0;i<items.length;i++){if(t<1+i*0.8)break;T(items[i][0],24,72+i*16,items[i][1],8);}
+  if(t>5.5)T('BATCH-INVARIANT, DETERMINISTIC',W/2,160,C.dim,8,'center');
+}
+function b7(t){
+  bgGrid();T('10+ TEACHERS, ONE STUDENT',W/2,8,C.cyan,8,'center');
+  const pal=[C.red,C.amber,C.green,C.cyan,C.purple];
+  for(let i=0;i<10;i++){const x=20+i*29;sprite(ROBOT,x,24,{A:pal[i%5],W:C.white,B:C.dark,C:C.cyan});
+    const k=((t*0.6)+i*0.1)%1;R(x+4+(154-x-4)*k,36+(78-36)*k,3,3,C.white);}
+  sprite(ROBOT,148,78,RMAP,2);T('V4',164,100,C.white,8,'center');
+  T('ON-POLICY DISTILL, FULL-VOCAB KL',W/2,116,C.amber,8,'center');
+  const modes=[['NON-THINK','8K'],['HIGH','128K'],['MAX','384K']];
+  for(let i=0;i<3;i++){if(t<2+i*0.7)break;const x=28+i*92;box(x,134,84,30,C.bg2,C.steel3);T(modes[i][0],x+42,139,C.white,8,'center');T(modes[i][1],x+42,151,C.dim,8,'center');}
+}
+function b8(t){
+  stars(t);for(let i=0;i<8;i++)rack(12+i*38,140,30,30,t,i);R(0,170,W,10,C.steel);
+  T('AT 1M CONTEXT, VS V3.2',W/2,10,C.cyan,8,'center');
+  const k=ease((t-0.5)/1.5);
+  T('FLOPS',40,26,C.dim,8);R(40,36,200,8,C.steel);R(40,36,200*0.27*k,8,C.amber);T('27%',246,36,C.amber,8);
+  T('KV CACHE',40,50,C.dim,8);R(40,60,200,8,C.steel);R(40,60,200*0.10*k,8,C.green);T('10%',246,60,C.green,8);
+  if(t>2.5)T('LIVECODEBENCH 93.5 . CODEFORCES 3206',W/2,82,C.white,8,'center');
+  if(t>3.2)T('SWE VERIFIED 80.6 . MRCR 1M 83.5',W/2,96,C.white,8,'center');
+  if(t>4)T('PRO-MAX MODE NUMBERS',W/2,112,C.dim,8,'center');
+  for(let i=0;i<5;i++)robot(100+i*26,160,t+i*0.37,true);
+  if(Math.floor(t*2)%2===0)T('REPLAY',W/2,126,C.amber,8,'center');
+}
+
+const scenes=[
+ {dur:7,draw:b0,title:'DeepSeek-V4：百万 token 上下文',text:'2026 年 4 月 26 日提交的预览版技术报告，318 位作者。两个 MoE 模型：V4-Pro 1.6T 参数（激活 49B）、V4-Flash 284B（激活 13B），上下文都是 100 万 token。'},
+ {dur:7,draw:b1,title:'两个模型，一套架构',text:'Pro 每个 token 只激活 1.6T 里的 49B，大约 3%；Flash 激活 284B 里的 13B。像一本 1600 页的书，每读一个词只翻 49 页。'},
+ {dur:8,draw:b2,title:'MoE：384 个专家，每次请 6 个加 1 个',text:'沿用 DeepSeekMoE：Pro 384 个路由专家、Flash 256 个，每个 token 走 6 个路由专家加 1 个常驻共享专家。前 3 个 MoE 层用哈希路由，亲和函数从 Sigmoid 换成 Sqrt(Softplus)。'},
+ {dur:8,draw:b3,title:'CSA：压缩稀疏注意力',text:'先沿序列把 KV 压缩，每 4 个 token 合成一张「索引卡」，再由闪电索引器（64 头、头维 128）给卡片打分，选出 Top-K（Flash 512、Pro 1024）做稀疏注意力。'},
+ {dur:8,draw:b4,title:'HCA：更狠的压缩，但保留稠密注意力',text:'HCA 每 128 个 token 才压成一张卡，然后对这些卡做稠密注意力。CSA 和 HCA 在层间交替：Pro 61 层、Flash 43 层；Flash 开头两层是滑动窗口层，Pro 开头两层是 HCA。'},
+ {dur:7,draw:b5,title:'mHC：四车道残差流',text:'残差流拓宽 4 倍，车道之间用一个双随机矩阵混合（20 步 Sinkhorn-Knopp 投影），谱范数不超过 1，深层训练不会炸。这个技巧单独写了一篇论文，见 mHC 那集。'},
+ {dur:8,draw:b6,title:'预训练：32T 以上 token',text:'大部分计算用 FP8，路由专家权重用 FP4；优化器换成 Muon（混合 Newton-Schulz，10 步），带多 token 预测。基础设施上有把计算、通信、访存重叠起来的融合 MoE kernel，用 TileLang 写，并且做到批次无关的确定性。'},
+ {dur:8,draw:b7,title:'后训练：十多个老师教一个学生',text:'先按领域做专家 SFT 和 GRPO，再用在线策略蒸馏（全词表反向 KL）把十多个教师模型合并进一个学生。三档推理模式 Non-Think / High / Max，上下文 8K / 128K / 384K。rollout 用 token 级预写日志，中断后接着跑而不是重来。'},
+ {dur:8,draw:b8,title:'100 万 token 时的账',text:'在 1M 上下文下，V4-Pro 单 token 推理只要 V3.2 的 27% FLOPs 和 10% KV 缓存。Pro-Max 模式：LiveCodeBench 93.5、Codeforces 3206、SWE Verified 80.6、MRCR 1M 83.5。85 名开发者里 52% 愿意把它当主力编程模型。'}
+];
+
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+let idx=0,st=0,playing=!reduced,last=performance.now();
+const capNum=document.getElementById('capNum'),capTitle=document.getElementById('capTitle'),capText=document.getElementById('capText');
+const dots=document.getElementById('dots'),playBtn=document.getElementById('play'),pausedTag=document.getElementById('pausedTag');
+const pad=n=>String(n+1).padStart(2,'0');
+
+scenes.forEach((s,i)=>{
+  const d=document.createElement('button');d.className='dot';d.type='button';d.setAttribute('role','tab');d.setAttribute('aria-label',pad(i)+' '+s.title);d.addEventListener('click',()=>go(i));dots.appendChild(d);
+});
+function setCaption(){
+  capNum.textContent=pad(idx)+' / '+scenes.length;capTitle.textContent=scenes[idx].title;capText.textContent=scenes[idx].text;
+  [...dots.children].forEach((d,i)=>d.setAttribute('aria-selected',i===idx?'true':'false'));
+}
+function go(i){idx=(i+scenes.length)%scenes.length;st=reduced?scenes[idx].dur*0.92:0;setCaption();}
+function setPlaying(p){playing=p;playBtn.textContent=p?'暂停':'播放';pausedTag.hidden=p;last=performance.now();}
+document.getElementById('prev').addEventListener('click',()=>go(idx-1));
+document.getElementById('next').addEventListener('click',()=>go(idx+1));
+playBtn.addEventListener('click',()=>setPlaying(!playing));
+document.getElementById('screen').addEventListener('click',()=>setPlaying(!playing));
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='BUTTON'&&e.key===' ')return;
+  if(e.key===' '){e.preventDefault();setPlaying(!playing);}
+  else if(e.key==='ArrowRight')go(idx+1);
+  else if(e.key==='ArrowLeft')go(idx-1);
+});
+document.addEventListener('visibilitychange',()=>{last=performance.now();});
+
+function frame(now){
+  const dt=Math.min(0.1,(now-last)/1000);last=now;
+  if(playing){st+=dt;if(st>=scenes[idx].dur){idx=(idx+1)%scenes.length;st=0;setCaption();}}
+  R(0,0,W,H,C.bg);
+  scenes[idx].draw(st);
+  R(0,H-2,W*clamp(st/scenes[idx].dur,0,1),2,C.amber);
+  requestAnimationFrame(frame);
+}
+setCaption();setPlaying(playing);
+if(reduced)st=scenes[0].dur*0.92;
+requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
