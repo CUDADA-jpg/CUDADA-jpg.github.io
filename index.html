@@ -59,9 +59,9 @@
     gap: 32px;
   }
   .intro { min-width: 0; }
+  .side { flex: 0 0 auto; width: 220px; display: flex; flex-direction: column; gap: 14px; }
   .greet {
-    flex: 0 0 auto;
-    width: 220px;
+    width: 100%;
     height: 220px;
     border-radius: 24px;
     border: 1px solid var(--line);
@@ -256,25 +256,69 @@
     width: 10px; height: 10px; border-radius: 50%;
     background: var(--accent); border: 2px solid var(--card);
   }
-  .pet {
-    position: fixed;
-    left: 0; bottom: 6px;
-    width: 48px; height: 45px;
-    z-index: 50;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    will-change: transform;
-    touch-action: manipulation;
+  /* ---- claw machine: the three pets live inside its glass now ---- */
+  .machine {
+    position: relative; width: 100%;
+    border: 1px solid var(--line); border-radius: 18px; background: var(--card);
+    overflow: hidden; user-select: none; -webkit-user-select: none;
   }
+  .cm-top { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px 7px; border-bottom: 1px solid var(--line); }
+  .cm-title { font-size: 0.62rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .cm-lights { display: flex; gap: 4px; }
+  .cm-lights i { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); animation: cm-blink 1.2s steps(1) infinite; }
+  .cm-lights i:nth-child(2n) { animation-delay: .6s; }
+  @keyframes cm-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: .3; } }
+  .cm-glass {
+    position: relative; height: 150px; margin: 10px 12px 0;
+    border-radius: 10px; border: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--accent-soft) 0%, var(--card) 75%);
+    overflow: hidden;
+  }
+  .cm-glass::after { content: ""; position: absolute; inset: 0; border-radius: inherit;
+    background: linear-gradient(115deg, rgba(255,255,255,.22) 0%, rgba(255,255,255,0) 38%); pointer-events: none; z-index: 6; }
+  .cm-floor { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; border-top: 1px solid var(--line);
+    background: repeating-linear-gradient(90deg, var(--accent-soft) 0 6px, transparent 6px 12px); }
+  .cm-rail { position: absolute; left: 8px; right: 8px; top: 5px; height: 3px; border-radius: 2px; background: var(--line); }
+  .claw { position: absolute; top: 6px; left: 0; width: 30px; z-index: 5; pointer-events: none; transition: left .9s cubic-bezier(.45,0,.2,1); }
+  .claw-rope { width: 2px; height: 14px; margin: 0 auto; background: var(--muted); transition: height .7s cubic-bezier(.45,0,.2,1); }
+  .claw-head { width: 30px; height: 24px; display: block; transform-origin: 50% 0; animation: claw-sway 2.8s ease-in-out infinite; }
+  .machine.busy .claw-head { animation: none; }
+  @keyframes claw-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+  .prong { transform-box: fill-box; transition: transform .25s ease; }
+  .prong-l { transform-origin: 100% 0; }
+  .prong-r { transform-origin: 0 0; }
+  .claw.closed .prong-l { transform: rotate(-30deg); }
+  .claw.closed .prong-r { transform: rotate(30deg); }
+  .cm-panel { display: flex; align-items: center; gap: 12px; padding: 10px 14px 12px; }
+  .cm-stick { position: relative; width: 26px; height: 30px; flex: 0 0 auto; transform-origin: 50% 100%; transition: transform .3s; }
+  .cm-stick::before { content: ""; position: absolute; left: 11px; bottom: 4px; width: 4px; height: 18px; border-radius: 2px; background: var(--muted); }
+  .cm-stick::after { content: ""; position: absolute; left: 5px; top: 0; width: 16px; height: 16px; border-radius: 50%; background: #e0565b; box-shadow: inset -3px -3px 0 rgba(0,0,0,.18); }
+  .cm-stick i { position: absolute; left: 3px; bottom: 0; width: 20px; height: 6px; border-radius: 3px; background: var(--line); }
+  .machine.busy .cm-stick { transform: rotate(-16deg); }
+  .cm-btn { width: 34px; height: 34px; border-radius: 50%; border: 0; padding: 0; flex: 0 0 auto; cursor: pointer;
+    background: var(--accent); box-shadow: 0 3px 0 rgba(0,0,0,.28), inset 0 -2px 0 rgba(0,0,0,.12); transition: transform .1s, box-shadow .1s; }
+  .cm-btn:active, .machine.busy .cm-btn { transform: translateY(3px); box-shadow: 0 0 0 rgba(0,0,0,.28), inset 0 -2px 0 rgba(0,0,0,.12); }
+  .cm-btn:disabled { cursor: default; }
+  .cm-btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .cm-label { font-size: 0.72rem; color: var(--muted); line-height: 1.35; min-width: 0; }
+  .cm-label b { display: block; color: var(--fg); font-size: 0.86rem; font-weight: 600; }
+  .cm-coin { margin-left: auto; width: 6px; height: 16px; border-radius: 2px; background: var(--line); box-shadow: inset 0 0 0 1px var(--muted); flex: 0 0 auto; }
+  @media (prefers-reduced-motion: reduce) {
+    .cm-lights i, .claw-head { animation: none; }
+    .claw, .claw-rope, .prong, .cm-stick, .pet, .cloud, .latte { transition: none !important; }
+  }
+  .pet, .cloud, .latte {
+    position: absolute; cursor: pointer; z-index: 3;
+    user-select: none; -webkit-user-select: none; will-change: transform; touch-action: manipulation;
+    transition: transform .3s cubic-bezier(.45,0,.2,1);
+  }
+  .pet { left: 11%; bottom: 10px; width: 40px; height: 38px; }
   .pet-body {
     width: 100%; height: 100%;
     transform-origin: 50% 100%;
   }
   .pet-sprite { width: 100%; height: 100%; display: block; }
-  .pet.walking .pet-body { animation: pet-walk .36s steps(2, jump-none) infinite; }
   .pet.hop .pet-body { animation: pet-hop .5s cubic-bezier(.3,.9,.4,1) 1; }
-  .pet.flip .pet-sprite { transform: scaleX(-1); }
   @keyframes pet-walk {
     0%   { transform: translateY(0) rotate(-3deg); }
     100% { transform: translateY(-3px) rotate(3deg); }
@@ -287,7 +331,7 @@
     100% { transform: translateY(0) scale(1, 1); }
   }
   .pet-spark {
-    position: fixed;
+    position: absolute;
     width: 4px; height: 4px;
     background: var(--accent);
     pointer-events: none;
@@ -299,22 +343,11 @@
     to   { opacity: 0; transform: translate(var(--dx), var(--dy)); }
   }
   @media (prefers-reduced-motion: reduce) {
-    .pet.walking .pet-body, .pet.hop .pet-body { animation: none; }
+    .pet.hop .pet-body { animation: none; }
   }
-  .cloud {
-    position: fixed;
-    left: 0; bottom: 0;
-    width: 72px; height: 44px;
-    z-index: 48;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    will-change: transform;
-    touch-action: manipulation;
-  }
+  .cloud { left: 50%; margin-left: -28px; bottom: 58px; width: 56px; height: 34px; z-index: 2; }
   .cloud-body { width: 100%; height: 100%; animation: cloud-bob 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
   .cloud-sprite { width: 100%; height: 100%; display: block; }
-  .cloud.flip .cloud-sprite { transform: scaleX(-1); }
   .cloud.squish .cloud-body { animation: cloud-squish .5s ease-out 1; }
   @keyframes cloud-bob {
     0%, 100% { transform: translateY(0); }
@@ -327,7 +360,7 @@
     100% { transform: scale(1, 1); }
   }
   .rain-drop {
-    position: fixed;
+    position: absolute;
     width: 3px; height: 7px;
     border-radius: 2px;
     background: #6fa8dc;
@@ -342,20 +375,9 @@
   @media (prefers-reduced-motion: reduce) {
     .cloud-body, .cloud.squish .cloud-body { animation: none; }
   }
-  .latte {
-    position: fixed;
-    left: 0; bottom: 6px;
-    width: 48px; height: 42px;
-    z-index: 50;
-    cursor: pointer;
-    user-select: none;
-    -webkit-user-select: none;
-    will-change: transform;
-    touch-action: manipulation;
-  }
+  .latte { right: 11%; bottom: 10px; width: 40px; height: 35px; }
   .latte-body { position: relative; width: 100%; height: 100%; transform-origin: 50% 100%; }
   .latte-sprite { width: 100%; height: 100%; display: block; }
-  .latte.flip .latte-sprite { transform: scaleX(-1); }
   .latte.hop .latte-body { animation: latte-hop .42s cubic-bezier(.3,.9,.4,1) 1; }
   .latte.cheer .latte-body { animation: latte-cheer .6s ease-out 1; }
   @keyframes latte-hop {
@@ -380,16 +402,16 @@
     opacity: 0;
     animation: steam 2.2s ease-out infinite;
   }
-  .steam.s1 { left: 12px; animation-delay: 0s; }
-  .steam.s2 { left: 20px; animation-delay: .7s; }
-  .steam.s3 { left: 28px; animation-delay: 1.4s; }
+  .steam.s1 { left: 10px; animation-delay: 0s; }
+  .steam.s2 { left: 17px; animation-delay: .7s; }
+  .steam.s3 { left: 24px; animation-delay: 1.4s; }
   @keyframes steam {
     0%   { opacity: 0;   transform: translateY(0) scaleY(.6); }
     20%  { opacity: .55; }
     100% { opacity: 0;   transform: translateY(-16px) translateX(2px) scaleY(1.2); }
   }
   .latte-heart {
-    position: fixed;
+    position: absolute;
     width: 12px; height: 12px;
     pointer-events: none;
     z-index: 51;
@@ -413,15 +435,20 @@
   }
   footer a { color: inherit; }
   @media (max-width: 640px) {
-    .greet { width: 170px; height: 170px; }
+    .side { width: 170px; }
+    .greet { height: 170px; }
     .greet-word { font-size: 1.6rem; }
+    .cm-glass { height: 136px; }
+    .cm-label span { display: none; }
   }
   @media (max-width: 480px) {
     main { padding-top: 48px; }
     h1 { font-size: 1.7rem; }
     .project-head { flex-direction: column; gap: 2px; }
     header { flex-direction: column; align-items: flex-start; gap: 28px; }
-    .greet { width: 100%; height: 150px; }
+    .side { width: 100%; }
+    .greet { height: 150px; }
+    .cm-glass { height: 150px; }
   }
 </style>
 </head>
@@ -442,9 +469,37 @@
       </button></li>
     </ul>
     </div>
-    <div class="greet" aria-live="polite">
-      <div class="greet-word" id="greet-word">你好</div>
-      <div class="greet-lang" id="greet-lang">中文</div>
+    <div class="side">
+      <div class="greet" aria-live="polite">
+        <div class="greet-word" id="greet-word">你好</div>
+        <div class="greet-lang" id="greet-lang">中文</div>
+      </div>
+      <div class="machine" id="machine" role="group" aria-label="抓娃娃机，里面有三只像素宠物">
+        <div class="cm-top"><span class="cm-title">Claw Machine</span><span class="cm-lights" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+        <div class="cm-glass" id="cm-glass">
+          <div class="cm-rail" aria-hidden="true"></div>
+          <div class="claw" id="claw" aria-hidden="true"><div class="claw-rope" id="claw-rope"></div><svg class="claw-head" viewBox="0 0 15 12" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM5 1h1v1h-1zM9 1h1v1h-1zM5 2h1v1h-1zM9 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1z"/><path fill="#b8b4ad" d="M6 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1z"/><path class="prong prong-l" fill="#3d3530" d="M5 3h1v1h-1zM5 4h1v1h-1zM4 5h1v1h-1zM4 6h1v1h-1zM3 7h1v1h-1zM3 8h1v1h-1zM3 9h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1z"/><path class="prong prong-r" fill="#3d3530" d="M9 3h1v1h-1zM9 4h1v1h-1zM10 5h1v1h-1zM10 6h1v1h-1zM11 7h1v1h-1zM11 8h1v1h-1zM11 9h1v1h-1zM10 10h1v1h-1zM9 10h1v1h-1z"/></svg></div>
+        <div class="pet" id="pet" title="戳我一下" role="img" aria-label="一只到处跑的像素星星">
+          <div class="pet-body" id="pet-body"><svg class="pet-sprite" viewBox="0 0 16 15" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M7 0h1v1h-1zM8 0h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM6 2h1v1h-1zM9 2h1v1h-1zM5 3h1v1h-1zM10 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM10 5h1v1h-1zM15 5h1v1h-1zM1 6h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM9 6h1v1h-1zM11 6h1v1h-1zM14 6h1v1h-1zM2 7h1v1h-1zM13 7h1v1h-1zM2 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM13 8h1v1h-1zM1 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM6 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM14 11h1v1h-1zM1 12h1v1h-1zM5 12h1v1h-1zM9 12h1v1h-1zM14 12h1v1h-1zM1 13h1v1h-1zM4 13h1v1h-1zM10 13h1v1h-1zM14 13h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM13 14h1v1h-1z"/><path fill="#fbe79a" d="M7 1h1v1h-1zM7 2h1v1h-1zM6 3h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM2 6h1v1h-1z"/><path fill="#f5d76e" d="M8 1h1v1h-1zM8 2h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM13 5h1v1h-1zM3 6h1v1h-1zM5 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1z"/><path fill="#d9b84f" d="M14 5h1v1h-1zM13 6h1v1h-1zM12 8h1v1h-1zM13 9h1v1h-1zM13 10h1v1h-1zM13 11h1v1h-1zM13 12h1v1h-1zM13 13h1v1h-1z"/><path fill="#f2a3a3" d="M3 7h1v1h-1zM4 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1z"/></svg></div>
+        </div>
+        <div class="cloud" id="cloud" title="戳我会下雨" role="img" aria-label="一朵飘来飘去的像素云">
+          <div class="cloud-body" id="cloud-body"><svg class="cloud-sprite" viewBox="0 0 18 11" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM5 1h1v1h-1zM11 1h1v1h-1zM4 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM15 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM16 3h1v1h-1zM1 4h1v1h-1zM17 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM12 5h1v1h-1zM17 5h1v1h-1zM0 6h1v1h-1zM17 6h1v1h-1zM0 7h1v1h-1zM7 7h1v1h-1zM10 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM17 8h1v1h-1zM1 9h1v1h-1zM16 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1z"/><path fill="#ffffff" d="M6 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM10 6h1v1h-1zM11 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM2 9h1v1h-1z"/><path fill="#f2a3a3" d="M3 6h1v1h-1zM14 6h1v1h-1z"/><path fill="#dbe6f0" d="M3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1z"/></svg></div>
+        </div>
+        <div class="latte" id="latte" title="戳我一下" role="img" aria-label="一杯蹦蹦跳跳的像素拿铁">
+          <div class="latte-body" id="latte-body">
+            <span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span>
+            <svg class="latte-sprite" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM0 1h1v1h-1zM13 1h1v1h-1zM0 2h1v1h-1zM13 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM1 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM4 5h1v1h-1zM9 5h1v1h-1zM13 5h1v1h-1zM15 5h1v1h-1zM1 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM1 7h1v1h-1zM6 7h1v1h-1zM9 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM1 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM13 8h1v1h-1zM15 8h1v1h-1zM1 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM2 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM12 11h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM6 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1z"/><path fill="#c48a5a" d="M1 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM12 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1z"/><path fill="#fff3dc" d="M2 1h1v1h-1zM3 1h1v1h-1zM7 1h1v1h-1z"/><path fill="#ffffff" d="M2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM14 5h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1z"/><path fill="#f2a3a3" d="M3 6h1v1h-1zM11 6h1v1h-1z"/><path fill="#dbe6f0" d="M3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM6 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1z"/></svg>
+          </div>
+        </div>
+          <div class="cm-floor" aria-hidden="true"></div>
+        </div>
+        <div class="cm-panel">
+          <span class="cm-stick" aria-hidden="true"><i></i></span>
+          <button class="cm-btn" id="cm-btn" type="button" aria-label="抓一下"></button>
+          <span class="cm-label"><b id="cm-msg">抓一下</b><span id="cm-sub">免费，不用投币</span></span>
+          <span class="cm-coin" aria-hidden="true"></span>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -479,18 +534,6 @@
     © <span id="year"></span> CUDADA-jpg · 本页托管于 <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a>
   </footer>
 </main>
-<div class="pet" id="pet" title="戳我一下" role="img" aria-label="一只到处跑的像素星星">
-  <div class="pet-body" id="pet-body"><svg class="pet-sprite" viewBox="0 0 16 15" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M7 0h1v1h-1zM8 0h1v1h-1zM6 1h1v1h-1zM9 1h1v1h-1zM6 2h1v1h-1zM9 2h1v1h-1zM5 3h1v1h-1zM10 3h1v1h-1zM0 4h1v1h-1zM1 4h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM10 5h1v1h-1zM15 5h1v1h-1zM1 6h1v1h-1zM4 6h1v1h-1zM6 6h1v1h-1zM9 6h1v1h-1zM11 6h1v1h-1zM14 6h1v1h-1zM2 7h1v1h-1zM13 7h1v1h-1zM2 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM13 8h1v1h-1zM1 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM14 9h1v1h-1zM1 10h1v1h-1zM14 10h1v1h-1zM1 11h1v1h-1zM6 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM14 11h1v1h-1zM1 12h1v1h-1zM5 12h1v1h-1zM9 12h1v1h-1zM14 12h1v1h-1zM1 13h1v1h-1zM4 13h1v1h-1zM10 13h1v1h-1zM14 13h1v1h-1zM1 14h1v1h-1zM2 14h1v1h-1zM3 14h1v1h-1zM11 14h1v1h-1zM12 14h1v1h-1zM13 14h1v1h-1z"/><path fill="#fbe79a" d="M7 1h1v1h-1zM7 2h1v1h-1zM6 3h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM2 6h1v1h-1z"/><path fill="#f5d76e" d="M8 1h1v1h-1zM8 2h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM13 5h1v1h-1zM3 6h1v1h-1zM5 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM10 7h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM12 11h1v1h-1zM2 12h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM12 12h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1z"/><path fill="#d9b84f" d="M14 5h1v1h-1zM13 6h1v1h-1zM12 8h1v1h-1zM13 9h1v1h-1zM13 10h1v1h-1zM13 11h1v1h-1zM13 12h1v1h-1zM13 13h1v1h-1z"/><path fill="#f2a3a3" d="M3 7h1v1h-1zM4 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1z"/></svg></div>
-</div>
-<div class="cloud" id="cloud" title="戳我会下雨" role="img" aria-label="一朵飘来飘去的像素云">
-  <div class="cloud-body" id="cloud-body"><svg class="cloud-sprite" viewBox="0 0 18 11" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM5 1h1v1h-1zM11 1h1v1h-1zM4 2h1v1h-1zM12 2h1v1h-1zM13 2h1v1h-1zM14 2h1v1h-1zM15 2h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM16 3h1v1h-1zM1 4h1v1h-1zM17 4h1v1h-1zM0 5h1v1h-1zM5 5h1v1h-1zM12 5h1v1h-1zM17 5h1v1h-1zM0 6h1v1h-1zM17 6h1v1h-1zM0 7h1v1h-1zM7 7h1v1h-1zM10 7h1v1h-1zM17 7h1v1h-1zM0 8h1v1h-1zM8 8h1v1h-1zM9 8h1v1h-1zM17 8h1v1h-1zM1 9h1v1h-1zM16 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM13 10h1v1h-1zM14 10h1v1h-1zM15 10h1v1h-1z"/><path fill="#ffffff" d="M6 1h1v1h-1zM7 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM15 4h1v1h-1zM16 4h1v1h-1zM1 5h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM4 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM9 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM16 5h1v1h-1zM1 6h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM10 6h1v1h-1zM11 6h1v1h-1zM12 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM16 6h1v1h-1zM1 7h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM6 7h1v1h-1zM8 7h1v1h-1zM9 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM13 7h1v1h-1zM14 7h1v1h-1zM15 7h1v1h-1zM16 7h1v1h-1zM1 8h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM13 8h1v1h-1zM14 8h1v1h-1zM15 8h1v1h-1zM16 8h1v1h-1zM2 9h1v1h-1z"/><path fill="#f2a3a3" d="M3 6h1v1h-1zM14 6h1v1h-1z"/><path fill="#dbe6f0" d="M3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM15 9h1v1h-1z"/></svg></div>
-</div>
-<div class="latte" id="latte" title="戳我一下" role="img" aria-label="一杯蹦蹦跳跳的像素拿铁">
-  <div class="latte-body" id="latte-body">
-    <span class="steam s1"></span><span class="steam s2"></span><span class="steam s3"></span>
-    <svg class="latte-sprite" viewBox="0 0 16 14" shape-rendering="crispEdges" aria-hidden="true"><path fill="#3d3530" d="M1 0h1v1h-1zM2 0h1v1h-1zM3 0h1v1h-1zM4 0h1v1h-1zM5 0h1v1h-1zM6 0h1v1h-1zM7 0h1v1h-1zM8 0h1v1h-1zM9 0h1v1h-1zM10 0h1v1h-1zM11 0h1v1h-1zM12 0h1v1h-1zM0 1h1v1h-1zM13 1h1v1h-1zM0 2h1v1h-1zM13 2h1v1h-1zM0 3h1v1h-1zM1 3h1v1h-1zM2 3h1v1h-1zM3 3h1v1h-1zM4 3h1v1h-1zM5 3h1v1h-1zM6 3h1v1h-1zM7 3h1v1h-1zM8 3h1v1h-1zM9 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM12 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM1 4h1v1h-1zM13 4h1v1h-1zM14 4h1v1h-1zM1 5h1v1h-1zM4 5h1v1h-1zM9 5h1v1h-1zM13 5h1v1h-1zM15 5h1v1h-1zM1 6h1v1h-1zM13 6h1v1h-1zM15 6h1v1h-1zM1 7h1v1h-1zM6 7h1v1h-1zM9 7h1v1h-1zM13 7h1v1h-1zM15 7h1v1h-1zM1 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM13 8h1v1h-1zM15 8h1v1h-1zM1 9h1v1h-1zM13 9h1v1h-1zM14 9h1v1h-1zM2 10h1v1h-1zM12 10h1v1h-1zM2 11h1v1h-1zM12 11h1v1h-1zM3 12h1v1h-1zM4 12h1v1h-1zM5 12h1v1h-1zM6 12h1v1h-1zM7 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM2 13h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM6 13h1v1h-1zM7 13h1v1h-1zM8 13h1v1h-1zM9 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1z"/><path fill="#c48a5a" d="M1 1h1v1h-1zM4 1h1v1h-1zM5 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM9 1h1v1h-1zM10 1h1v1h-1zM11 1h1v1h-1zM12 1h1v1h-1zM1 2h1v1h-1zM2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM9 2h1v1h-1zM10 2h1v1h-1zM11 2h1v1h-1zM12 2h1v1h-1z"/><path fill="#fff3dc" d="M2 1h1v1h-1zM3 1h1v1h-1zM7 1h1v1h-1z"/><path fill="#ffffff" d="M2 4h1v1h-1zM3 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM7 4h1v1h-1zM8 4h1v1h-1zM9 4h1v1h-1zM10 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM2 5h1v1h-1zM3 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM7 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM12 5h1v1h-1zM14 5h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM7 6h1v1h-1zM8 6h1v1h-1zM9 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM2 7h1v1h-1zM3 7h1v1h-1zM4 7h1v1h-1zM5 7h1v1h-1zM7 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM11 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM9 8h1v1h-1zM10 8h1v1h-1zM11 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM2 9h1v1h-1zM3 9h1v1h-1zM4 9h1v1h-1zM5 9h1v1h-1zM6 9h1v1h-1zM7 9h1v1h-1zM8 9h1v1h-1zM9 9h1v1h-1zM10 9h1v1h-1zM11 9h1v1h-1zM12 9h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM7 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1z"/><path fill="#f2a3a3" d="M3 6h1v1h-1zM11 6h1v1h-1z"/><path fill="#dbe6f0" d="M3 11h1v1h-1zM4 11h1v1h-1zM5 11h1v1h-1zM6 11h1v1h-1zM7 11h1v1h-1zM8 11h1v1h-1zM9 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1z"/></svg>
-  </div>
-</div>
 <script>
 document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -597,192 +640,135 @@ document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
 (function () {
+  var machine = document.getElementById('machine');
+  var glass = document.getElementById('cm-glass');
+  var claw = document.getElementById('claw');
+  var rope = document.getElementById('claw-rope');
+  var btn = document.getElementById('cm-btn');
+  var msg = document.getElementById('cm-msg');
+  var sub = document.getElementById('cm-sub');
   var pet = document.getElementById('pet');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var W = 48;
-  var x = Math.min(120, Math.max(0, window.innerWidth / 2 - W / 2));
-  var target = x, speed = 0, dir = 1;
-  var state = 'idle', until = 0, last = 0;
-
-  function maxX() { return Math.max(0, window.innerWidth - W); }
-  function rand(a, b) { return a + Math.random() * (b - a); }
-
-  function pickWalk(now) {
-    target = rand(0, maxX());
-    if (Math.abs(target - x) < 40) target = x + (x < maxX() / 2 ? 1 : -1) * rand(80, 200);
-    target = Math.max(0, Math.min(maxX(), target));
-    speed = rand(45, 90);
-    dir = target > x ? 1 : -1;
-    pet.classList.toggle('flip', dir < 0);
-    state = 'walk';
-    pet.classList.add('walking');
-  }
-  function pickIdle(now) {
-    state = 'idle';
-    until = now + rand(900, 3200);
-    pet.classList.remove('walking');
-  }
-  function hop() {
-    pet.classList.remove('hop');
-    void pet.offsetWidth;
-    pet.classList.add('hop');
-  }
-  function sparkle() {
-    var r = pet.getBoundingClientRect();
-    for (var i = 0; i < 6; i++) {
-      var s = document.createElement('div');
-      s.className = 'pet-spark';
-      s.style.left = (r.left + r.width / 2) + 'px';
-      s.style.top = (r.top + r.height / 3) + 'px';
-      var a = Math.random() * Math.PI * 2, d = rand(18, 40);
-      s.style.setProperty('--dx', Math.cos(a) * d + 'px');
-      s.style.setProperty('--dy', (Math.sin(a) * d - 20) + 'px');
-      document.body.appendChild(s);
-      setTimeout(function (el) { el.remove(); }.bind(null, s), 650);
-    }
-  }
-
-  pet.style.transform = 'translateX(' + x + 'px)';
-  if (reduce) { x = 24; pet.style.transform = 'translateX(24px)'; }
-
-  function frame(now) {
-    if (!last) last = now;
-    var dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-    if (state === 'walk') {
-      x += dir * speed * dt;
-      if ((dir > 0 && x >= target) || (dir < 0 && x <= target)) { x = target; pickIdle(now); if (Math.random() < 0.25) hop(); }
-    } else if (now >= until) {
-      pickWalk(now);
-    }
-    x = Math.max(0, Math.min(maxX(), x));
-    pet.style.transform = 'translateX(' + x + 'px)';
-    requestAnimationFrame(frame);
-  }
-  if (!reduce) { pickIdle(0); requestAnimationFrame(frame); }
-
-  pet.addEventListener('click', function () {
-    hop(); sparkle();
-    if (!reduce) { state = 'idle'; until = performance.now() + 900; pet.classList.remove('walking'); }
-  });
-  pet.addEventListener('animationend', function (e) { if (e.animationName === 'pet-hop') pet.classList.remove('hop'); });
-  window.addEventListener('resize', function () { x = Math.min(x, maxX()); });
-})();
-
-(function () {
   var cloud = document.getElementById('cloud');
+  var latte = document.getElementById('latte');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var W = 72, H = 44;
+  var busy = false;
   function rand(a, b) { return a + Math.random() * (b - a); }
-  function maxX() { return Math.max(0, window.innerWidth - W); }
-  var x = Math.min(maxX(), window.innerWidth * 0.65);
-  var y = 92;                      // distance from bottom
-  var tx = x, ty = y, vx = 0, vy = 0, dir = 1, last = 0;
-  var resting = 0;
-
-  function apply() { cloud.style.transform = 'translate(' + x + 'px, ' + (-y) + 'px)'; }
-  function pick() {
-    tx = rand(0, maxX());
-    if (Math.abs(tx - x) < 60) tx = Math.max(0, Math.min(maxX(), x + (x < maxX() / 2 ? 1 : -1) * rand(120, 260)));
-    ty = rand(70, Math.max(80, Math.min(170, window.innerHeight * 0.3)));
-    var sp = rand(18, 34);
-    var dx = tx - x, dy = ty - y, d = Math.hypot(dx, dy) || 1;
-    vx = dx / d * sp; vy = dy / d * sp;
-    dir = dx >= 0 ? 1 : -1;
-    cloud.classList.toggle('flip', dir < 0);
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, reduce ? Math.min(ms, 80) : ms); }); }
+  function rel(el) { // element box relative to the glass
+    var g = glass.getBoundingClientRect(), r = el.getBoundingClientRect();
+    return { left: r.left - g.left, top: r.top - g.top, width: r.width, height: r.height, bottom: r.bottom - g.top };
   }
-  function frame(now) {
-    if (!last) last = now;
-    var dt = Math.min(0.05, (now - last) / 1000); last = now;
-    if (resting > 0) { resting -= dt; if (resting <= 0) pick(); }
-    else {
-      x += vx * dt; y += vy * dt;
-      if ((vx >= 0 && x >= tx) || (vx < 0 && x <= tx)) { x = tx; y = ty; vx = vy = 0; resting = rand(1.5, 4); }
+  function pulse(el, cls, body) {
+    el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls);
+  }
+
+  // --- the pets' own reactions (same as before, just drawn inside the glass) ---
+  function sparkle() {
+    var r = rel(pet);
+    for (var i = 0; i < 6; i++) {
+      var sp = document.createElement('div');
+      sp.className = 'pet-spark';
+      sp.style.left = (r.left + r.width / 2) + 'px';
+      sp.style.top = (r.top + r.height / 3) + 'px';
+      var a = Math.random() * Math.PI * 2, d = rand(14, 32);
+      sp.style.setProperty('--dx', Math.cos(a) * d + 'px');
+      sp.style.setProperty('--dy', (Math.sin(a) * d - 16) + 'px');
+      glass.appendChild(sp);
+      setTimeout(function (el) { el.remove(); }.bind(null, sp), 650);
     }
-    x = Math.max(0, Math.min(maxX(), x));
-    apply();
-    requestAnimationFrame(frame);
   }
-  apply();
-  if (!reduce) { resting = 1; requestAnimationFrame(frame); }
-
   function rain() {
-    var r = cloud.getBoundingClientRect();
+    var r = rel(cloud);
     for (var i = 0; i < 9; i++) {
       var d = document.createElement('div');
       d.className = 'rain-drop';
-      d.style.left = (r.left + 8 + Math.random() * (r.width - 16)) + 'px';
-      d.style.top = (r.bottom - 6) + 'px';
-      d.style.setProperty('--fall', rand(40, 80) + 'px');
+      d.style.left = (r.left + 6 + Math.random() * (r.width - 12)) + 'px';
+      d.style.top = (r.bottom - 4) + 'px';
+      d.style.setProperty('--fall', rand(30, 60) + 'px');
       d.style.animationDelay = (Math.random() * 0.25) + 's';
-      document.body.appendChild(d);
+      glass.appendChild(d);
       setTimeout(function (el) { el.remove(); }.bind(null, d), 1100);
     }
   }
-  cloud.addEventListener('click', function () {
-    cloud.classList.remove('squish'); void cloud.offsetWidth; cloud.classList.add('squish');
-    rain();
-    if (!reduce) { vx = vy = 0; resting = 1.2; }
-  });
-  cloud.addEventListener('animationend', function (e) { if (e.animationName === 'cloud-squish') cloud.classList.remove('squish'); });
-  window.addEventListener('resize', function () { x = Math.min(x, maxX()); apply(); });
-})();
-
-(function () {
-  var latte = document.getElementById('latte');
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var W = 48;
-  function rand(a, b) { return a + Math.random() * (b - a); }
-  function maxX() { return Math.max(0, window.innerWidth - W); }
-  var x = Math.min(maxX(), Math.max(0, window.innerWidth * 0.35));
-  var hopsLeft = 0, dir = 1, timer = null;
-
-  function apply() { latte.style.transform = 'translateX(' + x + 'px)'; }
-  function hopOnce() {
-    latte.classList.remove('hop'); void latte.offsetWidth; latte.classList.add('hop');
-    var start = x, dist = dir * rand(22, 34), t0 = performance.now();
-    (function step(now) {
-      var k = Math.min(1, (now - t0) / 420);
-      x = Math.max(0, Math.min(maxX(), start + dist * k));
-      apply();
-      if (k < 1) requestAnimationFrame(step);
-    })(t0);
-  }
-  function plan() {
-    hopsLeft = Math.round(rand(2, 5));
-    dir = Math.random() < 0.5 ? -1 : 1;
-    if (x < 60) dir = 1; if (x > maxX() - 60) dir = -1;
-    latte.classList.toggle('flip', dir < 0);
-    burst();
-  }
-  function burst() {
-    if (hopsLeft <= 0) { timer = setTimeout(plan, rand(1200, 3500)); return; }
-    hopsLeft--; hopOnce();
-    timer = setTimeout(burst, 520);
-  }
-  apply();
-  if (!reduce) timer = setTimeout(plan, 1500);
-
   function heart() {
-    var r = latte.getBoundingClientRect();
+    var r = rel(latte);
     var h = document.createElement('div');
     h.className = 'latte-heart';
     h.style.left = (r.left + r.width / 2 - 6) + 'px';
-    h.style.top = (r.top - 6) + 'px';
+    h.style.top = (r.top - 4) + 'px';
     h.innerHTML = '<svg viewBox="0 0 10 9" shape-rendering="crispEdges"><path fill="#e0565b" d="M1 1h2v1h1v1h2V2h1V1h2v3H8v1H7v1H6v1H5v1H4V7H3V6H2V5H1V4H0V1z"/></svg>';
-    document.body.appendChild(h);
+    glass.appendChild(h);
     setTimeout(function () { h.remove(); }, 1100);
   }
-  latte.addEventListener('click', function () {
-    latte.classList.remove('cheer'); void latte.offsetWidth; latte.classList.add('cheer');
-    heart();
-    if (!reduce) { clearTimeout(timer); hopsLeft = 0; timer = setTimeout(plan, 1500); }
-  });
+  var pets = [
+    { el: pet,   name: '星星', react: function () { pulse(pet, 'hop'); sparkle(); } },
+    { el: cloud, name: '云朵', react: function () { pulse(cloud, 'squish'); rain(); } },
+    { el: latte, name: '拿铁', react: function () { pulse(latte, 'cheer'); heart(); } }
+  ];
+  pets.forEach(function (p) { p.el.addEventListener('click', p.react); });
+  pet.addEventListener('animationend', function (e) { if (e.animationName === 'pet-hop') pet.classList.remove('hop'); });
+  cloud.addEventListener('animationend', function (e) { if (e.animationName === 'cloud-squish') cloud.classList.remove('squish'); });
   latte.addEventListener('animationend', function (e) {
     if (e.animationName === 'latte-hop') latte.classList.remove('hop');
     if (e.animationName === 'latte-cheer') latte.classList.remove('cheer');
   });
-  window.addEventListener('resize', function () { x = Math.min(x, maxX()); apply(); });
+
+  // --- the claw ---
+  var CLAW_W = 30, ROPE_HOME = 14, HEAD_H = 24, RAIL_TOP = 6;
+  function homeX() { return glass.clientWidth / 2 - CLAW_W / 2; }
+  function moveClaw(x, ms) { claw.style.transitionDuration = ms + 'ms'; claw.style.left = x + 'px'; return wait(ms + 40); }
+  function setRope(h, ms) { rope.style.transitionDuration = ms + 'ms'; rope.style.height = h + 'px'; return wait(ms + 40); }
+  function carry(el, dx, dy, ms, ease) {
+    el.style.transitionDuration = ms + 'ms';
+    el.style.transitionTimingFunction = ease || '';
+    el.style.transform = 'translate(' + dx + 'px, ' + (-dy) + 'px)';
+    return wait(ms + 40);
+  }
+  function say(a, b) { msg.textContent = a; if (b !== undefined) sub.textContent = b; }
+  claw.style.left = homeX() + 'px';
+  window.addEventListener('resize', function () { if (!busy) claw.style.left = homeX() + 'px'; });
+
+  async function play() {
+    if (busy) return;
+    busy = true; btn.disabled = true; machine.classList.add('busy');
+    var p = pets[Math.floor(Math.random() * pets.length)];
+    var r = rel(p.el);
+    var cx = r.left + r.width / 2 - CLAW_W / 2;
+    var ropeDown = Math.max(8, r.top + 8 - RAIL_TOP - HEAD_H);
+    say('瞄准' + p.name + '…', '');
+    await moveClaw(cx, 900);
+    await setRope(ropeDown, 700);
+    claw.classList.add('closed');
+    await wait(380);
+    if (Math.random() < 0.45) {
+      say('夹住了！', '往出口送…');
+      var lift = ropeDown - ROPE_HOME;
+      carry(p.el, 0, lift, 700);
+      await setRope(ROPE_HOME, 700);
+      var dx = homeX() - cx;
+      carry(p.el, dx, lift, 900);
+      await moveClaw(homeX(), 900);
+      await wait(250);
+      claw.classList.remove('closed');
+      say('哎呀，掉了', '再来一次？');
+      await carry(p.el, 0, 0, 420, 'cubic-bezier(.5,0,.9,.6)');
+      p.react();
+    } else {
+      say('滑掉了…', '差一点');
+      carry(p.el, 0, 10, 300);
+      await setRope(ropeDown - 10, 300);
+      await wait(150);
+      claw.classList.remove('closed');
+      await carry(p.el, 0, 0, 220, 'cubic-bezier(.5,0,.9,.6)');
+      p.react();
+      await setRope(ROPE_HOME, 600);
+    }
+    await moveClaw(homeX(), 800);
+    await wait(900);
+    say('抓一下', '免费，不用投币');
+    machine.classList.remove('busy'); btn.disabled = false; busy = false;
+  }
+  btn.addEventListener('click', play);
 })();
 </script>
 </body>
