@@ -52,13 +52,14 @@
     padding: 72px 16px 96px;
   }
   header {
-    margin-bottom: 56px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 32px;
   }
   .intro { min-width: 0; }
+  .intro #about h2 { margin-top: 40px; }
   .side { flex: 0 0 auto; width: 220px; display: flex; flex-direction: column; gap: 14px; }
   .greet {
     width: 100%;
@@ -468,6 +469,10 @@
         <span class="pill-text" id="pill-text">The Little Things</span>
       </button></li>
     </ul>
+    <section id="about">
+      <h2>关于我</h2>
+      <p>Let AI education be enjoyable and effective.</p>
+    </section>
     </div>
     <div class="side">
       <div class="greet" aria-live="polite">
@@ -503,10 +508,6 @@
     </div>
   </header>
 
-  <section id="about">
-    <h2>关于我</h2>
-    <p>Let AI education be enjoyable and effective.</p>
-  </section>
 
   <section id="music">
     <h2>正在听</h2>
